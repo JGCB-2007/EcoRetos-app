@@ -14,6 +14,15 @@ class RetoViewModel : ViewModel() {
     private val _retos = MutableStateFlow<List<Reto>>(emptyList())
     val retos: StateFlow<List<Reto>> = _retos
 
+    private val _retosAceptados = MutableStateFlow<Set<Int>>(emptySet())
+    val retosAceptados: StateFlow<Set<Int>> = _retosAceptados
+
+    private val _puntosCompletados = MutableStateFlow(0)
+    val puntosCompletados: StateFlow<Int> = _puntosCompletados
+
+    private val _retosCompletados = MutableStateFlow<Set<Int>>(emptySet())
+    val retosCompletados: StateFlow<Set<Int>> = _retosCompletados
+
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
@@ -24,12 +33,14 @@ class RetoViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = RetrofitClient.apiService.getRetos()
+
                 if (response.isSuccessful) {
                     _retos.value = response.body() ?: emptyList()
                     _error.value = null
                 } else {
                     _error.value = "Error HTTP: ${response.code()}"
                 }
+
             } catch (e: Exception) {
                 _error.value = "Error conexión: ${e.message}"
             }
@@ -45,15 +56,47 @@ class RetoViewModel : ViewModel() {
                 )
 
                 if (response.isSuccessful) {
+                    _retosAceptados.value = _retosAceptados.value + idReto
                     _mensaje.value = response.body()?.mensaje ?: "Reto aceptado correctamente"
                     _error.value = null
                 } else {
-                    _error.value = response.errorBody()?.string() ?: "No se pudo aceptar el reto"
+                    val errorMsg = response.errorBody()?.string() ?: "No se pudo aceptar el reto"
+
+                    if (
+                        errorMsg.contains("aceptado", ignoreCase = true) ||
+                        errorMsg.contains("ya", ignoreCase = true)
+                    ) {
+                        _retosAceptados.value = _retosAceptados.value + idReto
+                        _mensaje.value = "Este reto ya estaba aceptado"
+                        _error.value = null
+                    } else {
+                        _error.value = errorMsg
+                    }
                 }
 
             } catch (e: Exception) {
                 _error.value = "Error conexión: ${e.message}"
             }
+        }
+    }
+
+    fun cancelarRetoLocal(idReto: Int) {
+        _retosAceptados.value = _retosAceptados.value - idReto
+        _mensaje.value = "Reto cancelado"
+        _error.value = null
+    }
+
+    fun enviarEvidenciaLocal() {
+        _mensaje.value = "Evidencia enviada correctamente"
+        _error.value = null
+    }
+
+    fun completarRetoLocal(idReto: Int, puntos: Int) {
+        if (!_retosCompletados.value.contains(idReto)) {
+            _retosCompletados.value = _retosCompletados.value + idReto
+            _puntosCompletados.value += puntos
+            _mensaje.value = "Reto completado: +$puntos puntos"
+            _error.value = null
         }
     }
 }

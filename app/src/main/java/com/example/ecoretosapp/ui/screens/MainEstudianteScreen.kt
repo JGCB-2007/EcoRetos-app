@@ -1,0 +1,60 @@
+package com.example.ecoretosapp.ui.screens
+
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+
+@Composable
+fun MainEstudianteScreen(idUsuario: Int) {
+
+    var selectedItem by remember { mutableStateOf(0) }
+
+    val items = listOf("Inicio", "Retos", "Ranking", "Perfil")
+
+    val icons = listOf(
+        Icons.Default.Home,
+        Icons.Default.CheckCircle,
+        Icons.Default.Star,
+        Icons.Default.Person
+    )
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar(
+                containerColor = Color.White
+            ) {
+                items.forEachIndexed { index, item ->
+                    NavigationBarItem(
+                        selected = selectedItem == index,
+                        onClick = { selectedItem = index },
+                        icon = {
+                            Icon(
+                                imageVector = icons[index],
+                                contentDescription = item
+                            )
+                        },
+                        label = { Text(item) }
+                    )
+                }
+            }
+        }
+    ) { padding ->
+        androidx.compose.foundation.layout.Box(
+            modifier = Modifier.padding(padding)
+        ) {
+            when (selectedItem) {
+                0 -> HomeEstudianteScreen(idUsuario = idUsuario)
+                1 -> RetosScreen(idUsuario = idUsuario)
+                2 -> RankingScreen()
+                3 -> PerfilEstudianteScreen()
+            }
+        }
+    }
+}

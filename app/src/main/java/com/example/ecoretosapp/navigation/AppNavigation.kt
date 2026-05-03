@@ -7,7 +7,7 @@ import com.example.ecoretosapp.ui.screens.HomeAdminScreen
 import com.example.ecoretosapp.ui.screens.HomeEstudianteScreen
 import com.example.ecoretosapp.ui.screens.LoginScreen
 import com.example.ecoretosapp.viewmodel.LoginViewModel
-
+import com.example.ecoretosapp.ui.screens.MainEstudianteScreen
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
@@ -39,7 +39,7 @@ fun AppNavigation() {
         }
 
         composable("home_estudiante") {
-            HomeEstudianteScreen(
+            MainEstudianteScreen(
                 idUsuario = idUsuarioLogueado ?: 0
             )
         }

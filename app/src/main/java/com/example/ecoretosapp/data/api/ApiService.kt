@@ -2,14 +2,15 @@ package com.example.ecoretosapp.data.api
 
 import com.example.ecoretosapp.data.model.LoginRequest
 import com.example.ecoretosapp.data.model.LoginResponse
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.POST
-import retrofit2.http.GET
 import com.example.ecoretosapp.data.model.Reto
 import com.example.ecoretosapp.data.model.AceptarRetoRequest
 import com.example.ecoretosapp.data.model.ParticipacionResponse
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
+
 interface ApiService {
 
     @POST("auth/login")
