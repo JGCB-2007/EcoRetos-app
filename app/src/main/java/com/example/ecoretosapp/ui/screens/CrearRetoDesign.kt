@@ -1,5 +1,10 @@
 package com.example.ecoretosapp.ui.screens
 
+/**
+ * Pantalla o componente visual encargado de la creación de retos ecológicos.
+ * Permite definir la información necesaria para registrar un nuevo reto
+ * dentro de la aplicación.
+ */
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

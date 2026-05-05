@@ -1,6 +1,12 @@
 package com.example.ecoretosapp.ui.screens
 
 
+/**
+ * Contiene el diseño visual de la pantalla principal del administrador.
+ * Define la estructura y apariencia de los componentes mostrados
+ * en la interfaz administrativa.
+ */
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

@@ -1,5 +1,11 @@
 package com.example.ecoretosapp.ui.screens
 
+/**
+ * Pantalla encargada de mostrar la información del perfil del usuario.
+ * Presenta datos personales o información relacionada con la cuenta
+ * dentro de la aplicación.
+ */
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

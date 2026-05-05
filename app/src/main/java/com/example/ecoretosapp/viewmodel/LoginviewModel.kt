@@ -1,5 +1,11 @@
 package com.example.ecoretosapp.viewmodel
 
+/**
+ * ViewModel encargado de manejar la lógica del inicio de sesión.
+ * Se comunica con la API para validar las credenciales del usuario
+ * y mantiene el estado relacionado con la autenticación.
+ */
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecoretosapp.data.api.RetrofitClient

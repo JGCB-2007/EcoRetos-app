@@ -1,5 +1,11 @@
 package com.example.ecoretosapp.ui.screens
 
+/**
+ * Pantalla encargada de mostrar la lista de retos ecológicos disponibles.
+ * Permite al usuario visualizar, seleccionar o participar en los retos
+ * registrados en la aplicación.
+ */
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

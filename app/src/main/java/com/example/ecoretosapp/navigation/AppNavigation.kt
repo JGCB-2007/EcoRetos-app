@@ -1,5 +1,11 @@
 package com.example.ecoretosapp.navigation
 
+/**
+ * Define la navegación principal de la aplicación EcoRetos.
+ * Se encarga de gestionar las rutas entre las diferentes pantallas
+ * utilizando el sistema de navegación de Jetpack Compose.
+ */
+
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.*

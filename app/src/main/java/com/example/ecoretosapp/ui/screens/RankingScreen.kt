@@ -1,5 +1,11 @@
 package com.example.ecoretosapp.ui.screens
 
+/**
+ * Pantalla encargada de mostrar el ranking de usuarios.
+ * Permite visualizar la posición o puntaje de los participantes
+ * según su avance en los retos ecológicos.
+ */
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape

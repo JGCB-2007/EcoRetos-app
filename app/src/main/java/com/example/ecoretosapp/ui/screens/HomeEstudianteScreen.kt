@@ -1,5 +1,11 @@
 package com.example.ecoretosapp.ui.screens
 
+/**
+ * Pantalla principal del estudiante.
+ * Muestra las opciones y secciones disponibles para que el usuario
+ * pueda interactuar con los retos ecológicos.
+ */
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn

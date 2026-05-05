@@ -1,5 +1,11 @@
 package com.example.ecoretosapp.data.api
 
+/**
+ * Define las operaciones disponibles para comunicarse con la API del sistema EcoRetos.
+ * Aquí se especifican los endpoints (GET, POST, etc.) como login, obtención de retos
+ * y registro de participación de usuarios.
+ */
+
 import com.example.ecoretosapp.data.model.LoginRequest
 import com.example.ecoretosapp.data.model.LoginResponse
 import com.example.ecoretosapp.data.model.Reto

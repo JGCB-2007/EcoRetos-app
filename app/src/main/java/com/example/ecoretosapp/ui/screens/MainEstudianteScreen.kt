@@ -1,5 +1,11 @@
 package com.example.ecoretosapp.ui.screens
 
+/**
+ * Contenedor principal de las pantallas del estudiante.
+ * Organiza la navegación y visualización de las secciones disponibles
+ * para el rol de estudiante.
+ */
+
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle

@@ -1,5 +1,11 @@
 package com.example.ecoretosapp.viewmodel
 
+/**
+ * ViewModel encargado de gestionar la lógica relacionada con los retos ecológicos.
+ * Obtiene la información de los retos desde la API y administra el estado
+ * que será mostrado en las pantallas correspondientes.
+ */
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecoretosapp.data.api.RetrofitClient

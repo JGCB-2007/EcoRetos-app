@@ -1,5 +1,11 @@
 package com.example.ecoretosapp.navigation
 
+/**
+ * Contiene la configuración de navegación o vista principal
+ * para el usuario administrador dentro de la aplicación.
+ * Permite acceder a las funcionalidades disponibles para la gestión de retos.
+ */
+
 import androidx.compose.runtime.*
 import com.example.ecoretosapp.ui.screens.AdminInicioDesign
 import com.example.ecoretosapp.ui.screens.CrearRetoDesign

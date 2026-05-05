@@ -1,5 +1,11 @@
 package com.example.ecoretosapp.ui.screens
 
+/**
+ * Pantalla encargada de mostrar el formulario de inicio de sesión.
+ * Permite al usuario ingresar sus credenciales y validar el acceso
+ * a la aplicación EcoRetos.
+ */
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
