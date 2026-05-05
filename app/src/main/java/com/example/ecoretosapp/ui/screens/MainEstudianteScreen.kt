@@ -10,9 +10,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
 
 @Composable
-fun MainEstudianteScreen(idUsuario: Int) {
+fun MainEstudianteScreen(idUsuario: Int, navController: NavController, onLogout: () -> Unit) {
 
     var selectedItem by remember { mutableStateOf(0) }
 
@@ -50,10 +51,12 @@ fun MainEstudianteScreen(idUsuario: Int) {
             modifier = Modifier.padding(padding)
         ) {
             when (selectedItem) {
-                0 -> HomeEstudianteScreen(idUsuario = idUsuario)
+                0 -> HomeEstudianteScreen(idUsuario = idUsuario, navController = navController)
                 1 -> RetosScreen(idUsuario = idUsuario)
                 2 -> RankingScreen()
-                3 -> PerfilEstudianteScreen()
+                3 -> PerfilEstudianteScreen(
+                    onLogout = onLogout
+                )
             }
         }
     }

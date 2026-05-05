@@ -1,8 +1,11 @@
 package com.example.ecoretosapp.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -10,13 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecoretosapp.viewmodel.RetoViewModel
 
 @Composable
 fun PerfilEstudianteScreen(
-    retoViewModel: RetoViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    retoViewModel: RetoViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    onLogout: () -> Unit
 ) {
     val retosAceptados by retoViewModel.retosAceptados.collectAsState()
 
@@ -34,7 +39,10 @@ fun PerfilEstudianteScreen(
             .padding(16.dp)
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
             Column {
                 Text(
@@ -153,6 +161,62 @@ fun PerfilEstudianteScreen(
                 titulo = "Guardián Verde",
                 descripcion = "Buen avance acumulando puntos"
             )
+
+            LogoutCard(
+                onClick = onLogout
+            )
+
+            Spacer(modifier = Modifier.height(80.dp))
+        }
+    }
+}
+@Composable
+fun LogoutCard(
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(3.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .background(
+                        Color(0xFFD1FAE5),
+                        RoundedCornerShape(14.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("🚪", fontSize = 24.sp)
+            }
+
+            Spacer(modifier = Modifier.width(14.dp))
+
+            Column {
+                Text(
+                    text = "Cerrar sesión",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Red
+                )
+
+                Text(
+                    text = "Volver a la pantalla de inicio",
+                    fontSize = 13.sp,
+                    color = Color(0xFF64748B)
+                )
+            }
         }
     }
 }
@@ -228,3 +292,5 @@ private fun MedalCard(
         }
     }
 }
+
+

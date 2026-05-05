@@ -1,6 +1,5 @@
 package com.example.ecoretosapp.navigation
 
-
 import androidx.compose.runtime.*
 import com.example.ecoretosapp.ui.screens.AdminInicioDesign
 import com.example.ecoretosapp.ui.screens.CrearRetoDesign
@@ -14,8 +13,9 @@ data class Reto(
 )
 
 @Composable
-fun AdminHome() {
-
+fun AdminHome(
+    onLogout: () -> Unit
+) {
     var pantalla by remember { mutableStateOf("inicio") }
 
     var nombre by remember { mutableStateOf("") }
@@ -44,7 +44,8 @@ fun AdminHome() {
 
     when (pantalla) {
         "inicio" -> AdminInicioDesign(
-            irCrearReto = { pantalla = "crear" }
+            irCrearReto = { pantalla = "crear" },
+            onLogout = onLogout
         )
 
         "crear" -> CrearRetoDesign(

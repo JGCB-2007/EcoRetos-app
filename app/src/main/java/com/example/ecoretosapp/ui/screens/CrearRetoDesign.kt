@@ -15,6 +15,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecoretosapp.navigation.Reto
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.TextFieldDefaults
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +52,11 @@ fun CrearRetoDesign(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(
+                Brush.verticalGradient(
+                    listOf(Color(0xFFECFDF5), Color.White, Color(0xFFF7FEE7))
+                )
+            )
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
@@ -54,13 +64,17 @@ fun CrearRetoDesign(
         // HEADER
         item {
             Card(
-                shape = RoundedCornerShape(28.dp)
+                shape = RoundedCornerShape(28.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                ),
+                elevation = CardDefaults.cardElevation(3.dp)
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
 
                     Text(
                         text = "Administración",
-                        color = MaterialTheme.colorScheme.primary,
+                        color = Color.Black,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -79,7 +93,11 @@ fun CrearRetoDesign(
         // FORMULARIO
         item {
             Card(
-                shape = RoundedCornerShape(28.dp)
+                shape = RoundedCornerShape(28.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                ),
+                elevation = CardDefaults.cardElevation(3.dp)
             ) {
                 Column(
                     modifier = Modifier.padding(20.dp),
@@ -97,7 +115,16 @@ fun CrearRetoDesign(
                         onValueChange = onNombreChange,
                         label = { Text("Nombre del reto") },
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(18.dp)
+                        shape = RoundedCornerShape(18.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            disabledContainerColor = Color.White,
+                            focusedIndicatorColor = Color(0xFF10B981),
+                            focusedLabelColor = Color(0xFF10B981),
+                            cursorColor = Color(0xFF10B981),
+                            unfocusedIndicatorColor = Color(0xFF94A3B8)
+                        )
                     )
 
                     // 🔽 CATEGORÍA CON OPCIONES
@@ -106,17 +133,20 @@ fun CrearRetoDesign(
                         onExpandedChange = { expanded = !expanded }
                     ) {
                         OutlinedTextField(
-                            value = categoria,
-                            onValueChange = {},
-                            readOnly = true,
+                            value = nombre,
+                            onValueChange = onNombreChange,
                             label = { Text("Categoría") },
-                            modifier = Modifier
-                                .menuAnchor()
-                                .fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(18.dp),
-                            trailingIcon = {
-                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                            }
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.White,
+                                unfocusedContainerColor = Color.White,
+                                disabledContainerColor = Color.White,
+                                focusedIndicatorColor = Color(0xFF10B981),
+                                focusedLabelColor = Color(0xFF10B981),
+                                cursorColor = Color(0xFF10B981),
+                                unfocusedIndicatorColor = Color(0xFF94A3B8)
+                            )
                         )
 
                         ExposedDropdownMenu(
@@ -136,37 +166,60 @@ fun CrearRetoDesign(
                     }
 
                     OutlinedTextField(
-                        value = puntos,
-                        onValueChange = onPuntosChange,
+                        value = nombre,
+                        onValueChange = onNombreChange,
                         label = { Text("Puntos") },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(18.dp),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            disabledContainerColor = Color.White,
+                            focusedIndicatorColor = Color(0xFF10B981),
+                            focusedLabelColor = Color(0xFF10B981),
+                            cursorColor = Color(0xFF10B981),
+                            unfocusedIndicatorColor = Color(0xFF94A3B8)
                         )
                     )
 
                     OutlinedTextField(
-                        value = descripcion,
-                        onValueChange = onDescripcionChange,
+                        value = nombre,
+                        onValueChange = onNombreChange,
                         label = { Text("Descripción") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp),
-                        shape = RoundedCornerShape(18.dp)
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(18.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            disabledContainerColor = Color.White,
+                            focusedIndicatorColor = Color(0xFF10B981),
+                            focusedLabelColor = Color(0xFF10B981),
+                            cursorColor = Color(0xFF10B981),
+                            unfocusedIndicatorColor = Color(0xFF94A3B8)
+                        )
                     )
 
-                    Button(
-                        onClick = onGuardar,
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(56.dp),
-                        shape = RoundedCornerShape(18.dp)
+                            .height(56.dp)
+                            .clickable { onGuardar() }
+                            .background(
+                                Brush.horizontalGradient(
+                                    listOf(
+                                        Color(0xFF10B981),
+                                        Color(0xFF84CC16)
+                                    )
+                                ),
+                                shape = RoundedCornerShape(18.dp)
+                            ),
+                        contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = "Guardar reto",
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
                         )
                     }
 
@@ -177,7 +230,10 @@ fun CrearRetoDesign(
                             .height(52.dp),
                         shape = RoundedCornerShape(18.dp)
                     ) {
-                        Text("Volver")
+                        Text(
+                            text = "Volver",
+                            color = Color.Black
+                        )
                     }
                 }
             }
@@ -186,7 +242,11 @@ fun CrearRetoDesign(
         // LISTA DE RETOS
         items(retos) { reto ->
             Card(
-                shape = RoundedCornerShape(24.dp)
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                ),
+                elevation = CardDefaults.cardElevation(3.dp)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
 

@@ -4,6 +4,10 @@ import androidx.compose.runtime.Composable
 import com.example.ecoretosapp.navigation.AdminHome
 
 @Composable
-fun HomeAdminScreen() {
-    AdminHome()
+fun HomeAdminScreen(
+    onLogout: () -> Unit
+) {
+    AdminHome(
+        onLogout = onLogout
+    )
 }

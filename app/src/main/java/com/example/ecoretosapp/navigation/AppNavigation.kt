@@ -4,7 +4,6 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.*
 import com.example.ecoretosapp.ui.screens.HomeAdminScreen
-import com.example.ecoretosapp.ui.screens.HomeEstudianteScreen
 import com.example.ecoretosapp.ui.screens.LoginScreen
 import com.example.ecoretosapp.viewmodel.LoginViewModel
 import com.example.ecoretosapp.ui.screens.MainEstudianteScreen
@@ -40,12 +39,30 @@ fun AppNavigation() {
 
         composable("home_estudiante") {
             MainEstudianteScreen(
-                idUsuario = idUsuarioLogueado ?: 0
+                idUsuario = idUsuarioLogueado ?: 0,
+                navController = navController,
+                onLogout = {
+                    idUsuarioLogueado = null
+                    loginViewModel.resetLoginState()
+
+                    navController.navigate("login") {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
             )
         }
 
         composable("home_admin") {
-            HomeAdminScreen()
+            HomeAdminScreen(
+                onLogout = {
+                    idUsuarioLogueado = null
+                    loginViewModel.resetLoginState()
+
+                    navController.navigate("login") {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }
