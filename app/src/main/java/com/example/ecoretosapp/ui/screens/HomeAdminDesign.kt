@@ -28,8 +28,11 @@ import androidx.compose.ui.graphics.Brush
 @Composable
 fun AdminInicioDesign(
     irCrearReto: () -> Unit,
+    irPropuestas: () -> Unit,
+    irRevisarEvidencias: () -> Unit,
+    irCrearInsignia: () -> Unit,
     onLogout: () -> Unit
-) {
+){
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -163,7 +166,7 @@ fun AdminInicioDesign(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     OutlinedButton(
-                        onClick = { },
+                        onClick = irRevisarEvidencias,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
@@ -175,12 +178,29 @@ fun AdminInicioDesign(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     OutlinedButton(
-                        onClick = { },
+                        onClick = irCrearInsignia,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
                             "🏆 Crear insignia",
                             color = Color.Black
+                        )
+                    }
+                    OutlinedButton(
+                        onClick = irPropuestas,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(58.dp),
+                        shape = RoundedCornerShape(28.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text(
+                            text = "📝 Propuestas de estudiantes",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
                         )
                     }
                 }

@@ -27,8 +27,9 @@ import com.example.ecoretosapp.viewmodel.RetoViewModel
 @Composable
 fun RetosScreen(
     idUsuario: Int,
+    onEnviarEvidencia: (com.example.ecoretosapp.data.model.Reto) -> Unit,
     viewModel: RetoViewModel = viewModel()
-) {
+){
     val retos by viewModel.retos.collectAsState()
     val error by viewModel.error.collectAsState()
     val mensaje by viewModel.mensaje.collectAsState()
@@ -187,10 +188,7 @@ fun RetosScreen(
 
                                 Button(
                                     onClick = {
-                                        viewModel.completarRetoLocal(
-                                            idReto = reto.idReto,
-                                            puntos = reto.puntos
-                                        )
+                                        onEnviarEvidencia(reto)
                                     },
                                     modifier = Modifier
                                         .weight(1f)

@@ -9,8 +9,10 @@ package com.example.ecoretosapp.navigation
 import androidx.compose.runtime.*
 import com.example.ecoretosapp.ui.screens.AdminInicioDesign
 import com.example.ecoretosapp.ui.screens.CrearRetoDesign
-
-data class Reto(
+import com.example.ecoretosapp.ui.screens.PropuestasRetosAdminScreen
+import com.example.ecoretosapp.ui.screens.RevisarEvidenciasAdminScreen
+import com.example.ecoretosapp.ui.screens.CrearInsigniaScreen
+data class RetoAdmin(
     val nombre: String,
     val categoria: String,
     val puntos: String,
@@ -28,17 +30,18 @@ fun AdminHome(
     var categoria by remember { mutableStateOf("") }
     var puntos by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
+    var mensajeError by remember { mutableStateOf("") }
 
     var retos by remember {
         mutableStateOf(
             listOf(
-                Reto(
+                RetoAdmin(
                     nombre = "Reciclar botellas plásticas",
                     categoria = "Reciclaje",
                     puntos = "50",
                     descripcion = "Subir evidencia reciclando botellas dentro del campus."
                 ),
-                Reto(
+                RetoAdmin(
                     nombre = "Apagar luces innecesarias",
                     categoria = "Energía",
                     puntos = "35",
@@ -51,9 +54,44 @@ fun AdminHome(
     when (pantalla) {
         "inicio" -> AdminInicioDesign(
             irCrearReto = { pantalla = "crear" },
+            irPropuestas = { pantalla = "propuestas" },
+            irRevisarEvidencias = { pantalla = "evidencias" },
+            irCrearInsignia = { pantalla = "insignias" },
             onLogout = onLogout
         )
-
+        "propuestas" -> PropuestasRetosAdminScreen(
+            volver = {
+                pantalla = "inicio"
+            },
+            onAceptar = { propuesta, puntos ->
+                retos = retos + RetoAdmin(
+                    nombre = propuesta.nombre,
+                    categoria = propuesta.categoria,
+                    puntos = puntos,
+                    descripcion = propuesta.descripcion,
+                    estado = "Activo"
+                )
+            },
+            onRechazar = { propuesta ->
+                // Por ahora solo se elimina de pendientes desde la pantalla de propuestas
+            }
+        )
+        "evidencias" -> RevisarEvidenciasAdminScreen(
+            volver = {
+                pantalla = "inicio"
+            },
+            onAprobar = { evidencia ->
+                // Luego aquí se sumarán puntos al estudiante desde backend
+            },
+            onRechazar = { evidencia ->
+                // Luego aquí se marcará como rechazada desde backend
+            }
+        )
+        "insignias" -> CrearInsigniaScreen(
+            volver = {
+                pantalla = "inicio"
+            }
+        )
         "crear" -> CrearRetoDesign(
             nombre = nombre,
             categoria = categoria,
@@ -62,34 +100,64 @@ fun AdminHome(
             retos = retos,
             onNombreChange = { nombre = it },
             onCategoriaChange = { categoria = it },
-            onPuntosChange = { nuevo ->
-                if (nuevo.all { it.isDigit() }) {
-                    puntos = nuevo
-                }
-            },
+            onPuntosChange = { puntos = it },
             onDescripcionChange = { descripcion = it },
-            volver = { pantalla = "inicio" },
-            onGuardar = {
-                if (
-                    nombre.isNotBlank() &&
-                    categoria.isNotBlank() &&
-                    puntos.isNotBlank() &&
-                    descripcion.isNotBlank()
-                ) {
-                    retos = listOf(
-                        Reto(
-                            nombre = nombre,
-                            categoria = categoria,
-                            puntos = puntos,
-                            descripcion = descripcion
-                        )
-                    ) + retos
+            mensajeError = mensajeError,
 
-                    nombre = ""
-                    categoria = ""
-                    puntos = ""
-                    descripcion = ""
+            onEditar = { retoEditar ->
+                nombre = retoEditar.nombre
+                categoria = retoEditar.categoria
+                puntos = retoEditar.puntos
+                descripcion = retoEditar.descripcion
+
+                retos = retos.filter { it != retoEditar }
+                mensajeError = ""
+            },
+            onEliminar = { retoEliminar ->
+                retos = retos.filter { it != retoEliminar }
+            },
+
+            volver = {
+                pantalla = "inicio"
+            },
+
+            onGuardar = {
+                if (nombre.isBlank() || categoria.isBlank() || puntos.isBlank() || descripcion.isBlank()) {
+                    mensajeError = "Completa todos los campos antes de guardar"
+                    return@CrearRetoDesign
                 }
+                if (puntos.toIntOrNull() == null) {
+                    mensajeError = "Los puntos deben ser un número válido"
+                    return@CrearRetoDesign
+                }
+                if (puntos.toInt() <= 0) {
+                    mensajeError = "Los puntos deben ser mayores que 0"
+                    return@CrearRetoDesign
+                }
+                if (nombre.trim().length < 3) {
+                    mensajeError = "El nombre debe tener al menos 3 caracteres"
+                    return@CrearRetoDesign
+                }
+
+                if (descripcion.trim().length < 10) {
+                    mensajeError = "La descripción debe tener al menos 10 caracteres"
+                    return@CrearRetoDesign
+                }
+
+
+                retos = retos + RetoAdmin(
+                    nombre = nombre,
+                    categoria = categoria,
+                    puntos = puntos,
+                    descripcion = descripcion
+                )
+
+
+                nombre = ""
+                categoria = ""
+                puntos = ""
+                descripcion = ""
+                mensajeError = ""
             }
         )
     }

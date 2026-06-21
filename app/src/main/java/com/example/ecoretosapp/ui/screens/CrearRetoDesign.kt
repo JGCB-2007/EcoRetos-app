@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ecoretosapp.navigation.Reto
+import com.example.ecoretosapp.navigation.RetoAdmin
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
@@ -34,12 +34,15 @@ fun CrearRetoDesign(
     categoria: String,
     puntos: String,
     descripcion: String,
-    retos: List<Reto>,
+    mensajeError: String,
+    retos: List<RetoAdmin>,
     onNombreChange: (String) -> Unit,
     onCategoriaChange: (String) -> Unit,
     onPuntosChange: (String) -> Unit,
     onDescripcionChange: (String) -> Unit,
     onGuardar: () -> Unit,
+    onEditar: (RetoAdmin) -> Unit,
+    onEliminar: (RetoAdmin) -> Unit,
     volver: () -> Unit
 ) {
 
@@ -138,10 +141,13 @@ fun CrearRetoDesign(
                         onExpandedChange = { expanded = !expanded }
                     ) {
                         OutlinedTextField(
-                            value = nombre,
-                            onValueChange = onNombreChange,
+                            value = categoria,
+                            onValueChange = {},
+                            readOnly = true,
                             label = { Text("Categoría") },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .menuAnchor(),
                             shape = RoundedCornerShape(18.dp),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.White,
@@ -171,9 +177,12 @@ fun CrearRetoDesign(
                     }
 
                     OutlinedTextField(
-                        value = nombre,
-                        onValueChange = onNombreChange,
+                        value = puntos,
+                        onValueChange = onPuntosChange,
                         label = { Text("Puntos") },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(18.dp),
                         colors = TextFieldDefaults.colors(
@@ -188,8 +197,8 @@ fun CrearRetoDesign(
                     )
 
                     OutlinedTextField(
-                        value = nombre,
-                        onValueChange = onNombreChange,
+                        value = descripcion,
+                        onValueChange = onDescripcionChange,
                         label = { Text("Descripción") },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(18.dp),
@@ -203,7 +212,14 @@ fun CrearRetoDesign(
                             unfocusedIndicatorColor = Color(0xFF94A3B8)
                         )
                     )
-
+                    if (mensajeError.isNotBlank()) {
+                        Text(
+                            text = mensajeError,
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -299,7 +315,7 @@ fun CrearRetoDesign(
                     ) {
 
                         Button(
-                            onClick = {},
+                                onClick = { onEditar(reto) },
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(16.dp),
                             colors = ButtonDefaults.buttonColors(
@@ -310,7 +326,7 @@ fun CrearRetoDesign(
                         }
 
                         Button(
-                            onClick = {},
+                            onClick = { onEliminar(reto) },
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(16.dp),
                             colors = ButtonDefaults.buttonColors(
