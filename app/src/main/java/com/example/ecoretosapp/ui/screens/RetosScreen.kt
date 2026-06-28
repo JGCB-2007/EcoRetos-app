@@ -56,14 +56,14 @@ fun RetosScreen(
             item {
                 Column {
                     Text(
-                        text = "Retos disponibles",
+                        text = "Mis retos aceptados",
                         fontSize = 28.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color(0xFF0F172A)
                     )
 
                     Text(
-                        text = "Aceptá retos ecológicos cargados desde la base de datos.",
+                        text = "Aquí aparecen los retos que ya aceptaste.",
                         fontSize = 14.sp,
                         color = Color(0xFF64748B)
                     )
@@ -90,8 +90,30 @@ fun RetosScreen(
                 }
             }
 
-            items(retos) { reto ->
-                val aceptado = retosAceptados.contains(reto.idReto)
+            val retosAceptadosLista = retos.filter { reto ->
+                retosAceptados.contains(reto.idReto)
+            }
+
+            if (retosAceptadosLista.isEmpty()) {
+                item {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        elevation = CardDefaults.cardElevation(3.dp)
+                    ) {
+                        Text(
+                            text = "Aún no has aceptado ningún reto.",
+                            modifier = Modifier.padding(20.dp),
+                            fontSize = 16.sp,
+                            color = Color(0xFF64748B)
+                        )
+                    }
+                }
+            }
+
+            items(retosAceptadosLista) { reto ->
+                val aceptado = true
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -169,7 +191,10 @@ fun RetosScreen(
                             ) {
                                 Button(
                                     onClick = {
-                                        viewModel.cancelarRetoLocal(reto.idReto)
+                                        viewModel.cancelarRetoApi(
+                                            idReto = reto.idReto,
+                                            idUsuario = idUsuario
+                                        )
                                     },
                                     modifier = Modifier
                                         .weight(1f)

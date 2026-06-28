@@ -86,6 +86,29 @@ class RetoViewModel : ViewModel() {
         }
     }
 
+    fun cancelarRetoApi(idReto: Int, idUsuario: Int) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.apiService.cancelarReto(
+                    idReto = idReto,
+                    idUsuario = idUsuario
+                )
+
+                if (response.isSuccessful) {
+                    _mensaje.value = "Reto cancelado correctamente"
+
+                    _retosAceptados.value = _retosAceptados.value - idReto
+
+                    cargarRetos()
+                } else {
+                    _error.value = "No se pudo cancelar el reto"
+                }
+            } catch (e: Exception) {
+                _error.value = "Error al cancelar: ${e.message}"
+            }
+        }
+    }
+
     fun cancelarRetoLocal(idReto: Int) {
         _retosAceptados.value = _retosAceptados.value - idReto
         _mensaje.value = "Reto cancelado"

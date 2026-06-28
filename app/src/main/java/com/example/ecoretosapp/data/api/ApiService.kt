@@ -16,6 +16,8 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import okhttp3.ResponseBody
+import retrofit2.http.DELETE
 
 interface ApiService {
 
@@ -32,4 +34,10 @@ interface ApiService {
         @Path("idReto") idReto: Int,
         @Body request: AceptarRetoRequest
     ): Response<ParticipacionResponse>
+
+    @DELETE("retos/{idReto}/cancelar/{idUsuario}")
+    suspend fun cancelarReto(
+        @Path("idReto") idReto: Int,
+        @Path("idUsuario") idUsuario: Int
+    ): Response<ResponseBody>
 }
