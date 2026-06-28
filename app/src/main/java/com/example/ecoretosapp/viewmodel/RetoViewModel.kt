@@ -14,6 +14,8 @@ import com.example.ecoretosapp.data.model.Reto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import com.example.ecoretosapp.data.model.MisParticipacionesResponse
+import okhttp3.MultipartBody
 
 class RetoViewModel : ViewModel() {
 
@@ -22,6 +24,9 @@ class RetoViewModel : ViewModel() {
 
     private val _retosAceptados = MutableStateFlow<Set<Int>>(emptySet())
     val retosAceptados: StateFlow<Set<Int>> = _retosAceptados
+
+    private val _participaciones = MutableStateFlow<List<MisParticipacionesResponse>>(emptyList())
+    val participaciones: StateFlow<List<MisParticipacionesResponse>> = _participaciones
 
     private val _puntosCompletados = MutableStateFlow(0)
     val puntosCompletados: StateFlow<Int> = _puntosCompletados
@@ -129,7 +134,9 @@ class RetoViewModel : ViewModel() {
             _error.value = null
         }
     }
-
+    fun mostrarError(mensaje: String) {
+        _error.value = mensaje
+    }
     fun cargarParticipaciones(idUsuario: Int) {
         viewModelScope.launch {
             try {
@@ -137,6 +144,8 @@ class RetoViewModel : ViewModel() {
 
                 if (response.isSuccessful) {
                     val participaciones = response.body() ?: emptyList()
+
+                    _participaciones.value = participaciones
 
                     _retosAceptados.value = participaciones
                         .filter {
@@ -156,5 +165,51 @@ class RetoViewModel : ViewModel() {
                 _error.value = "Error conexión participaciones: ${e.message}"
             }
         }
+    }
+    fun enviarEvidenciaApi(
+        idParticipacion: Int,
+        imagen: MultipartBody.Part,
+        idUsuario: Int
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.apiService.enviarEvidencia(
+                    idParticipacion = idParticipacion,
+                    imagen = imagen
+                )
+
+                if (response.isSuccessful) {
+                    _mensaje.value = response.body()?.mensaje ?: "Evidencia enviada correctamente"
+                    _error.value = null
+                    cargarParticipaciones(idUsuario)
+                } else {
+                    val errorJson = response.errorBody()?.string()
+
+                    _error.value = extraerMensajeError(
+                        errorJson,
+                        "No se pudo enviar la evidencia"
+                    )
+                }
+
+            } catch (e: Exception) {
+                _error.value = "Error enviando evidencia: ${e.message}"
+            }
+        }
+    }
+}
+fun extraerMensajeError(errorJson: String?, mensajePorDefecto: String): String {
+    if (errorJson.isNullOrBlank()) return mensajePorDefecto
+
+    return try {
+        val inicio = errorJson.indexOf("\"mensaje\":\"")
+        if (inicio == -1) return mensajePorDefecto
+
+        val desde = inicio + "\"mensaje\":\"".length
+        val hasta = errorJson.indexOf("\"", desde)
+
+        if (hasta == -1) mensajePorDefecto
+        else errorJson.substring(desde, hasta)
+    } catch (e: Exception) {
+        mensajePorDefecto
     }
 }

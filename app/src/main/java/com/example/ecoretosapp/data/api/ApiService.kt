@@ -19,6 +19,10 @@ import retrofit2.http.Path
 import okhttp3.ResponseBody
 import retrofit2.http.DELETE
 import com.example.ecoretosapp.data.model.MisParticipacionesResponse
+import com.example.ecoretosapp.data.model.EvidenciaResponse
+import okhttp3.MultipartBody
+import retrofit2.http.Multipart
+import retrofit2.http.Part
 
 interface ApiService {
 
@@ -46,4 +50,11 @@ interface ApiService {
     suspend fun getParticipacionesUsuario(
         @Path("idUsuario") idUsuario: Int
     ): Response<List<MisParticipacionesResponse>>
+
+    @Multipart
+    @POST("participaciones/{idParticipacion}/evidencia")
+    suspend fun enviarEvidencia(
+        @Path("idParticipacion") idParticipacion: Int,
+        @Part imagen: MultipartBody.Part
+    ): Response<EvidenciaResponse>
 }

@@ -30,6 +30,7 @@ fun RetosScreen(
     onEnviarEvidencia: (com.example.ecoretosapp.data.model.Reto) -> Unit,
     viewModel: RetoViewModel = viewModel()
 ){
+    val participaciones by viewModel.participaciones.collectAsState()
     val retos by viewModel.retos.collectAsState()
     val error by viewModel.error.collectAsState()
     val mensaje by viewModel.mensaje.collectAsState()
@@ -214,7 +215,15 @@ fun RetosScreen(
 
                                 Button(
                                     onClick = {
-                                        onEnviarEvidencia(reto)
+                                        val participacion = participaciones.find {
+                                            it.idReto == reto.idReto
+                                        }
+
+                                        if (participacion?.estado == "ACEPTADO") {
+                                            onEnviarEvidencia(reto)
+                                        } else {
+                                            viewModel.mostrarError("Este reto ya tiene evidencia enviada")
+                                        }
                                     },
                                     modifier = Modifier
                                         .weight(1f)

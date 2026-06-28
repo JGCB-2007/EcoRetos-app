@@ -18,20 +18,28 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.rememberAsyncImagePainter
-import com.example.ecoretosapp.data.TempData
-import com.example.ecoretosapp.data.model.Evidencia
+import com.example.ecoretosapp.viewmodel.RetoViewModel
+import android.content.Context
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
+import java.io.FileOutputStream
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun EnviarEvidenciaScreen(
-    idReto: Int,
+    idParticipacion: Int,
+    idUsuario: Int,
     nombreReto: String,
+    viewModel: RetoViewModel,
     onEnviar: () -> Unit,
     volver: () -> Unit
 ){
 
     var comentario by remember { mutableStateOf("") }
     var imagenUri by remember { mutableStateOf<Uri?>(null) }
-
+    val context = LocalContext.current
     val seleccionarImagen = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -130,14 +138,16 @@ fun EnviarEvidenciaScreen(
                     return@Button
                 }
 
-                TempData.evidenciasPendientes.add(
-                    Evidencia(
-                        id = TempData.evidenciasPendientes.size + 1,
-                        idReto = idReto,
-                        nombreReto = nombreReto,
-                        comentario = comentario,
-                        imagenUri = imagenUri.toString()
-                    )
+                val imagenMultipart = crearMultipartDesdeUri(
+                    context = context,
+                    uri = imagenUri!!,
+                    nombreCampo = "imagen"
+                )
+
+                viewModel.enviarEvidenciaApi(
+                    idParticipacion = idParticipacion,
+                    imagen = imagenMultipart,
+                    idUsuario = idUsuario
                 )
 
                 onEnviar()
@@ -155,4 +165,31 @@ fun EnviarEvidenciaScreen(
             Text("Volver")
         }
     }
+}
+fun crearMultipartDesdeUri(
+    context: Context,
+    uri: Uri,
+    nombreCampo: String
+): MultipartBody.Part {
+    val inputStream = context.contentResolver.openInputStream(uri)
+        ?: throw IllegalArgumentException("No se pudo abrir la imagen")
+
+    val archivoTemporal = File.createTempFile(
+        "evidencia_",
+        ".jpg",
+        context.cacheDir
+    )
+
+    FileOutputStream(archivoTemporal).use { outputStream ->
+        inputStream.copyTo(outputStream)
+    }
+
+    val requestBody = archivoTemporal
+        .asRequestBody("image/jpeg".toMediaTypeOrNull())
+
+    return MultipartBody.Part.createFormData(
+        nombreCampo,
+        archivoTemporal.name,
+        requestBody
+    )
 }
