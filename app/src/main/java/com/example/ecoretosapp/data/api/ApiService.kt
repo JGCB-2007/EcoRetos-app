@@ -11,6 +11,7 @@ import com.example.ecoretosapp.data.model.LoginResponse
 import com.example.ecoretosapp.data.model.Reto
 import com.example.ecoretosapp.data.model.AceptarRetoRequest
 import com.example.ecoretosapp.data.model.ParticipacionResponse
+import com.example.ecoretosapp.data.model.EvidenciaAdminResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -57,4 +58,7 @@ interface ApiService {
         @Path("idParticipacion") idParticipacion: Int,
         @Part imagen: MultipartBody.Part
     ): Response<EvidenciaResponse>
+
+    @GET("admin/evidencias/pendientes")
+    suspend fun getEvidenciasPendientes(): Response<List<EvidenciaAdminResponse>>
 }

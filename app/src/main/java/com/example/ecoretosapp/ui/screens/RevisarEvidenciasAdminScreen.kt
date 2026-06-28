@@ -1,6 +1,5 @@
 package com.example.ecoretosapp.ui.screens
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,18 +16,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import com.example.ecoretosapp.data.TempData
-import com.example.ecoretosapp.data.model.Evidencia
-
+import com.example.ecoretosapp.data.model.EvidenciaAdminResponse
+import com.example.ecoretosapp.viewmodel.AdminEvidenciaViewModel
+import coil.compose.AsyncImage
 @Composable
 fun RevisarEvidenciasAdminScreen(
     volver: () -> Unit,
-    onAprobar: (Evidencia) -> Unit,
-    onRechazar: (Evidencia) -> Unit
+    onAprobar: (EvidenciaAdminResponse) -> Unit,
+    onRechazar: (EvidenciaAdminResponse) -> Unit,
+    viewModel: AdminEvidenciaViewModel = viewModel()
 ) {
-    var evidencias by remember {
-        mutableStateOf(TempData.evidenciasPendientes.toList())
+    val evidencias by viewModel.evidencias.collectAsState()
+    val error by viewModel.error.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.cargarEvidenciasPendientes()
     }
 
     LazyColumn(
@@ -78,6 +82,16 @@ fun RevisarEvidenciasAdminScreen(
             }
         }
 
+        if (error != null) {
+            item {
+                Text(
+                    text = error ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
         if (evidencias.isEmpty()) {
             item {
                 Card(
@@ -95,103 +109,99 @@ fun RevisarEvidenciasAdminScreen(
             }
         } else {
             items(evidencias) { evidencia ->
-                Card(
-                    shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(3.dp)
+                EvidenciaAdminCard(
+                    evidencia = evidencia,
+                    onAprobar = onAprobar,
+                    onRechazar = onRechazar
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun EvidenciaAdminCard(
+    evidencia: EvidenciaAdminResponse,
+    onAprobar: (EvidenciaAdminResponse) -> Unit,
+    onRechazar: (EvidenciaAdminResponse) -> Unit
+) {
+    Card(
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(3.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Text(
+                text = evidencia.tituloReto,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = "Enviado por: ${evidencia.nombreEstudiante}",
+                fontSize = 14.sp
+            )
+
+            AssistChip(
+                onClick = {},
+                label = {
+                    Text(
+                        text = evidencia.estadoValidacion,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            )
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp),
+                shape = RoundedCornerShape(18.dp)
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        Text(
-                            text = evidencia.nombreReto,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
+                    if (evidencia.urlImagen.isNotBlank()) {
+                        AsyncImage(
+                            model = evidencia.urlImagen.trim(),
+                            contentDescription = "Evidencia enviada",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
                         )
-
-                        Text(
-                            text = "Enviado por: ${evidencia.enviadoPor}",
-                            fontSize = 14.sp
-                        )
-
-                        AssistChip(
-                            onClick = {},
-                            label = {
-                                Text(
-                                    text = evidencia.estado,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        )
-
-                        if (evidencia.comentario.isNotBlank()) {
-                            Text(
-                                text = evidencia.comentario,
-                                fontSize = 14.sp
-                            )
-                        }
-
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp),
-                            shape = RoundedCornerShape(18.dp)
-                        ) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                if (evidencia.imagenUri.isNotBlank()) {
-                                    Image(
-                                        painter = rememberAsyncImagePainter(
-                                            Uri.parse(evidencia.imagenUri)
-                                        ),
-                                        contentDescription = "Evidencia enviada",
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                } else {
-                                    Text("Sin imagen")
-                                }
-                            }
-                        }
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            Button(
-                                onClick = {
-                                    onAprobar(evidencia)
-                                    TempData.evidenciasPendientes.remove(evidencia)
-                                    evidencias = TempData.evidenciasPendientes.toList()
-                                },
-                                modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(16.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF10B981)
-                                )
-                            ) {
-                                Text("Aprobar")
-                            }
-
-                            Button(
-                                onClick = {
-                                    onRechazar(evidencia)
-                                    TempData.evidenciasPendientes.remove(evidencia)
-                                    evidencias = TempData.evidenciasPendientes.toList()
-                                },
-                                modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(16.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.error
-                                )
-                            ) {
-                                Text("Rechazar")
-                            }
-                        }
+                    } else {
+                        Text("Sin imagen")
                     }
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Button(
+                    onClick = { onAprobar(evidencia) },
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF10B981)
+                    )
+                ) {
+                    Text("Aprobar")
+                }
+
+                Button(
+                    onClick = { onRechazar(evidencia) },
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Rechazar")
                 }
             }
         }
