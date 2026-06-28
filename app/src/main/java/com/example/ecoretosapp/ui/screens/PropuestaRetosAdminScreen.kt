@@ -1,41 +1,13 @@
 package com.example.ecoretosapp.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -45,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ecoretosapp.data.model.PropuestaResponse
+import com.example.ecoretosapp.ui.components.ConfirmacionDialog
 import com.example.ecoretosapp.viewmodel.AdminPropuestaViewModel
 
 @Composable
@@ -147,20 +120,20 @@ fun PropuestasRetosAdminScreen(
             items(propuestas) { propuesta ->
                 PropuestaAdminCard(
                     propuesta = propuesta,
-                    onAprobar = { puntos, dificultad, tipoValidacion, duracion, observacion ->
+                    onAprobar = { puntos, dificultad, tipoValidacion, duracionHoras, observacionAdmin ->
                         viewModel.aprobarPropuesta(
                             idPropuesta = propuesta.idPropuesta,
                             puntos = puntos,
                             dificultad = dificultad,
                             tipoValidacion = tipoValidacion,
-                            duracionHoras = duracion,
-                            observacionAdmin = observacion
+                            duracionHoras = duracionHoras,
+                            observacionAdmin = observacionAdmin
                         )
                     },
-                    onRechazar = { observacion ->
+                    onRechazar = { observacionAdmin ->
                         viewModel.rechazarPropuesta(
                             idPropuesta = propuesta.idPropuesta,
-                            observacionAdmin = observacion
+                            observacionAdmin = observacionAdmin
                         )
                     }
                 )
@@ -191,6 +164,9 @@ private fun PropuestaAdminCard(
 
     var expandedDificultad by remember { mutableStateOf(false) }
     var expandedTipo by remember { mutableStateOf(false) }
+
+    var confirmarAprobacion by remember { mutableStateOf(false) }
+    var confirmarRechazo by remember { mutableStateOf(false) }
 
     val dificultades = listOf("FACIL", "MEDIA", "ALTA")
     val tipos = listOf("MANUAL", "IA_APOYO", "HIBRIDA")
@@ -240,9 +216,7 @@ private fun PropuestaAdminCard(
                 value = puntosAsignados,
                 onValueChange = { puntosAsignados = it },
                 label = { Text("Puntos") },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = campoPropuestaColores()
@@ -323,9 +297,7 @@ private fun PropuestaAdminCard(
                 value = duracionHoras,
                 onValueChange = { duracionHoras = it },
                 label = { Text("Duración en horas") },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = campoPropuestaColores()
@@ -361,31 +333,13 @@ private fun PropuestaAdminCard(
                         val duracion = duracionHoras.toIntOrNull()
 
                         when {
-                            puntos == null -> {
-                                mensajeLocal = "Los puntos deben ser un número válido"
-                            }
-
-                            puntos <= 0 -> {
-                                mensajeLocal = "Los puntos deben ser mayores que 0"
-                            }
-
-                            duracion == null -> {
-                                mensajeLocal = "La duración debe ser un número válido"
-                            }
-
-                            duracion <= 0 -> {
-                                mensajeLocal = "La duración debe ser mayor que 0"
-                            }
-
+                            puntos == null -> mensajeLocal = "Los puntos deben ser un número válido"
+                            puntos <= 0 -> mensajeLocal = "Los puntos deben ser mayores que 0"
+                            duracion == null -> mensajeLocal = "La duración debe ser un número válido"
+                            duracion <= 0 -> mensajeLocal = "La duración debe ser mayor que 0"
                             else -> {
                                 mensajeLocal = ""
-                                onAprobar(
-                                    puntos,
-                                    dificultad,
-                                    tipoValidacion,
-                                    duracion,
-                                    observacion
-                                )
+                                confirmarAprobacion = true
                             }
                         }
                     },
@@ -393,16 +347,14 @@ private fun PropuestaAdminCard(
                         .weight(1f)
                         .height(50.dp),
                     shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF10B981)
-                    )
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981))
                 ) {
                     Text("Aprobar")
                 }
 
                 Button(
                     onClick = {
-                        onRechazar(observacion)
+                        confirmarRechazo = true
                     },
                     modifier = Modifier
                         .weight(1f)
@@ -416,6 +368,50 @@ private fun PropuestaAdminCard(
                 }
             }
         }
+    }
+
+    if (confirmarAprobacion) {
+        ConfirmacionDialog(
+            titulo = "Aprobar propuesta",
+            mensaje = "¿Deseas convertir la propuesta \"${propuesta.titulo}\" en un reto oficial?",
+            textoConfirmar = "Aprobar",
+            textoCancelar = "Cancelar",
+            onConfirmar = {
+                val puntos = puntosAsignados.toIntOrNull()
+                val duracion = duracionHoras.toIntOrNull()
+
+                if (puntos != null && duracion != null) {
+                    onAprobar(
+                        puntos,
+                        dificultad,
+                        tipoValidacion,
+                        duracion,
+                        observacion
+                    )
+                }
+
+                confirmarAprobacion = false
+            },
+            onCancelar = {
+                confirmarAprobacion = false
+            }
+        )
+    }
+
+    if (confirmarRechazo) {
+        ConfirmacionDialog(
+            titulo = "Rechazar propuesta",
+            mensaje = "¿Seguro que deseas rechazar la propuesta \"${propuesta.titulo}\"?",
+            textoConfirmar = "Rechazar",
+            textoCancelar = "Cancelar",
+            onConfirmar = {
+                onRechazar(observacion)
+                confirmarRechazo = false
+            },
+            onCancelar = {
+                confirmarRechazo = false
+            }
+        )
     }
 }
 

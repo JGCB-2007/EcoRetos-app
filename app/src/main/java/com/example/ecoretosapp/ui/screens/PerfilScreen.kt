@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecoretosapp.viewmodel.RetoViewModel
 import com.example.ecoretosapp.viewmodel.PerfilViewModel
+import com.example.ecoretosapp.ui.components.ConfirmacionDialog
 
 @Composable
 fun PerfilEstudianteScreen(
@@ -36,7 +37,7 @@ fun PerfilEstudianteScreen(
     val usuario by perfilViewModel.usuario.collectAsState()
     val error by perfilViewModel.error.collectAsState()
     val insignias by perfilViewModel.insignias.collectAsState()
-
+    var confirmarLogout by remember { mutableStateOf(false) }
 
     LaunchedEffect(idUsuario) {
         perfilViewModel.cargarUsuario(idUsuario)
@@ -197,13 +198,31 @@ fun PerfilEstudianteScreen(
             }
 
             LogoutCard(
-                onClick = onLogout
+                onClick = {
+                    confirmarLogout = true
+                }
             )
 
             Spacer(modifier = Modifier.height(80.dp))
         }
+        if (confirmarLogout) {
+            ConfirmacionDialog(
+                titulo = "Cerrar sesión",
+                mensaje = "¿Seguro que deseas cerrar sesión?",
+                textoConfirmar = "Cerrar sesión",
+                textoCancelar = "Cancelar",
+                onConfirmar = {
+                    confirmarLogout = false
+                    onLogout()
+                },
+                onCancelar = {
+                    confirmarLogout = false
+                }
+            )
+        }
     }
 }
+
 @Composable
 fun LogoutCard(
     onClick: () -> Unit
@@ -250,9 +269,13 @@ fun LogoutCard(
                     fontSize = 13.sp,
                     color = Color(0xFF64748B)
                 )
+
             }
+
         }
+
     }
+
 }
 
 @Composable
@@ -325,7 +348,9 @@ private fun MedalCard(
             }
         }
     }
+
 }
+
 fun obtenerNivelEco(puntos: Int): String {
     return when {
         puntos >= 500 -> "Maestro"

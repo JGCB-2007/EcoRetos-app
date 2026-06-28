@@ -45,6 +45,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecoretosapp.data.model.Reto
+import com.example.ecoretosapp.ui.components.ConfirmacionDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,7 +71,7 @@ fun CrearRetoDesign(
 ) {
     var expandedDificultad by remember { mutableStateOf(false) }
     var expandedTipoValidacion by remember { mutableStateOf(false) }
-
+    var retoAEliminar by remember { mutableStateOf<Reto?>(null) }
     val dificultades = listOf("FACIL", "MEDIA", "ALTA")
     val tiposValidacion = listOf("MANUAL", "IA_APOYO", "HIBRIDA")
 
@@ -304,10 +305,25 @@ fun CrearRetoDesign(
                 RetoAdminCard(
                     reto = reto,
                     onEditar = { onEditar(reto) },
-                    onEliminar = { onEliminar(reto) }
+                    onEliminar = { retoAEliminar = reto }
                 )
             }
         }
+    }
+    if (retoAEliminar != null) {
+        ConfirmacionDialog(
+            titulo = "Desactivar reto",
+            mensaje = "¿Seguro que deseas desactivar el reto \"${retoAEliminar!!.titulo}\"?",
+            textoConfirmar = "Desactivar",
+            textoCancelar = "Cancelar",
+            onConfirmar = {
+                onEliminar(retoAEliminar!!)
+                retoAEliminar = null
+            },
+            onCancelar = {
+                retoAEliminar = null
+            }
+        )
     }
 }
 

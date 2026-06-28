@@ -21,6 +21,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.ecoretosapp.data.model.EvidenciaAdminResponse
 import com.example.ecoretosapp.viewmodel.AdminEvidenciaViewModel
 import coil.compose.AsyncImage
+import com.example.ecoretosapp.ui.components.ConfirmacionDialog
+
 @Composable
 fun RevisarEvidenciasAdminScreen(
     volver: () -> Unit,
@@ -31,6 +33,9 @@ fun RevisarEvidenciasAdminScreen(
     val evidencias by viewModel.evidencias.collectAsState()
     val error by viewModel.error.collectAsState()
     val mensaje by viewModel.mensaje.collectAsState()
+    var evidenciaAprobar by remember { mutableStateOf<EvidenciaAdminResponse?>(null) }
+    var evidenciaRechazar by remember { mutableStateOf<EvidenciaAdminResponse?>(null) }
+
 
     LaunchedEffect(Unit) {
         viewModel.cargarEvidenciasPendientes()
@@ -121,14 +126,43 @@ fun RevisarEvidenciasAdminScreen(
                 EvidenciaAdminCard(
                     evidencia = evidencia,
                     onAprobar = {
-                        viewModel.aprobarEvidencia(it.idEvidencia)
+                        evidenciaAprobar = it
                     },
                     onRechazar = {
-                        viewModel.rechazarEvidencia(it.idEvidencia)
+                        evidenciaRechazar = it
                     }
                 )
             }
         }
+    }
+    if (evidenciaAprobar != null) {
+        ConfirmacionDialog(
+            titulo = "Aprobar evidencia",
+            mensaje = "¿Seguro que deseas aprobar la evidencia de \"${evidenciaAprobar!!.tituloReto}\"?",
+            textoConfirmar = "Aprobar",
+            onConfirmar = {
+                viewModel.aprobarEvidencia(evidenciaAprobar!!.idEvidencia)
+                evidenciaAprobar = null
+            },
+            onCancelar = {
+                evidenciaAprobar = null
+            }
+        )
+    }
+
+    if (evidenciaRechazar != null) {
+        ConfirmacionDialog(
+            titulo = "Rechazar evidencia",
+            mensaje = "¿Seguro que deseas rechazar la evidencia de \"${evidenciaRechazar!!.tituloReto}\"?",
+            textoConfirmar = "Rechazar",
+            onConfirmar = {
+                viewModel.rechazarEvidencia(evidenciaRechazar!!.idEvidencia)
+                evidenciaRechazar = null
+            },
+            onCancelar = {
+                evidenciaRechazar = null
+            }
+        )
     }
 }
 
