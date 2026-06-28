@@ -1,17 +1,11 @@
 package com.example.ecoretosapp.ui.screens
 
-/**
- * Pantalla encargada de mostrar el ranking de usuarios.
- * Permite visualizar la posición o puntaje de los participantes
- * según su avance en los retos ecológicos.
- */
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -19,22 +13,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-data class UsuarioRanking(
-    val nombre: String,
-    val puntos: Int
-)
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ecoretosapp.data.model.RankingResponse
+import com.example.ecoretosapp.viewmodel.RankingViewModel
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 
 @Composable
-fun RankingScreen() {
+fun RankingScreen(
+    viewModel: RankingViewModel = viewModel()
+) {
+    val ranking by viewModel.ranking.collectAsState()
+    val error by viewModel.error.collectAsState()
 
-    val usuarios = listOf(
-        UsuarioRanking("Juan Pérez", 120),
-        UsuarioRanking("María López", 100),
-        UsuarioRanking("Carlos Ruiz", 90),
-        UsuarioRanking("Ana Torres", 80),
-        UsuarioRanking("Luis Gómez", 70)
-    )
+    LaunchedEffect(Unit) {
+        viewModel.cargarRanking()
+    }
 
     Box(
         modifier = Modifier
@@ -45,16 +39,13 @@ fun RankingScreen() {
                 )
             )
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 40.dp)
         ) {
-
-            // 🔹 Título
             Text(
-                text = "Leaderboard",
+                text = "Ranking EcoRetos",
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
@@ -63,31 +54,64 @@ fun RankingScreen() {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // 🔥 TOP 3
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.Bottom
-            ) {
-                TopUserCircle("2", usuarios[1])
-                TopUserCircle("1", usuarios[0], isMain = true)
-                TopUserCircle("3", usuarios[2])
+            if (error != null) {
+                Text(
+                    text = error ?: "",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+            }
+
+            val top3 = ranking.take(3)
+
+            if (top3.isNotEmpty()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    if (top3.size >= 2) {
+                        TopUserCircle("2", top3[1])
+                    } else {
+                        Spacer(modifier = Modifier.width(70.dp))
+                    }
+
+                    TopUserCircle("1", top3[0], isMain = true)
+
+                    if (top3.size >= 3) {
+                        TopUserCircle("3", top3[2])
+                    } else {
+                        Spacer(modifier = Modifier.width(70.dp))
+                    }
+                }
+            } else {
+                Text(
+                    text = "Aún no hay estudiantes en el ranking.",
+                    color = Color.White,
+                    fontSize = 15.sp,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // 🔹 Lista blanca abajo
             Card(
                 modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(bottom = 90.dp)
                 ) {
-                    usuarios.drop(3).forEachIndexed { index, user ->
-                        RankingItem(index + 4, user)
+                    items(
+                        ranking.drop(3)
+                    ) { user ->
+                        RankingItem(user)
                     }
                 }
             }
@@ -98,13 +122,12 @@ fun RankingScreen() {
 @Composable
 fun TopUserCircle(
     puesto: String,
-    user: UsuarioRanking,
+    user: RankingResponse,
     isMain: Boolean = false
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Box(
             contentAlignment = Alignment.Center
         ) {
@@ -124,13 +147,13 @@ fun TopUserCircle(
         Spacer(modifier = Modifier.height(6.dp))
 
         Text(
-            text = user.nombre,
+            text = user.nombreCompleto,
             fontSize = 12.sp,
             color = Color.White
         )
 
         Text(
-            text = "${user.puntos} pts",
+            text = "${user.puntosTotales} pts",
             fontSize = 11.sp,
             color = Color.White.copy(alpha = 0.8f)
         )
@@ -139,8 +162,7 @@ fun TopUserCircle(
 
 @Composable
 fun RankingItem(
-    posicion: Int,
-    user: UsuarioRanking
+    user: RankingResponse
 ) {
     Row(
         modifier = Modifier
@@ -149,25 +171,24 @@ fun RankingItem(
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         Box(
             modifier = Modifier
                 .size(40.dp)
                 .background(Color(0xFFD1FAE5), CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            Text("#$posicion", fontWeight = FontWeight.Bold)
+            Text("#${user.posicion}", fontWeight = FontWeight.Bold)
         }
 
         Spacer(modifier = Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(user.nombre, fontWeight = FontWeight.Bold)
+            Text(user.nombreCompleto, fontWeight = FontWeight.Bold)
             Text("Usuario ecológico", fontSize = 12.sp, color = Color.Gray)
         }
 
         Text(
-            text = "${user.puntos} pts",
+            text = "${user.puntosTotales} pts",
             color = Color(0xFF059669),
             fontWeight = FontWeight.Bold
         )

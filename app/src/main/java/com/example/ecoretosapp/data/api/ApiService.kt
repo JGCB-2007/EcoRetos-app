@@ -26,6 +26,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.Part
 import com.example.ecoretosapp.data.model.AccionEvidenciaResponse
 import retrofit2.http.PUT
+import com.example.ecoretosapp.data.model.RankingResponse
 
 interface ApiService {
 
@@ -73,4 +74,7 @@ interface ApiService {
     suspend fun rechazarEvidencia(
         @Path("idEvidencia") idEvidencia: Int
     ): Response<AccionEvidenciaResponse>
+
+    @GET("ranking")
+    suspend fun getRanking(): Response<List<RankingResponse>>
 }
