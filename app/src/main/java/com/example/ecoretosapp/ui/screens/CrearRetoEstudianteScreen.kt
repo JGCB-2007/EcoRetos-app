@@ -13,19 +13,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ecoretosapp.data.TempData
-import com.example.ecoretosapp.data.model.RetoPropuesto
+import com.example.ecoretosapp.viewmodel.PropuestaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrearRetoEstudianteScreen(
-    volver: () -> Unit
+    idUsuario: Int,
+    volver: () -> Unit,
+    viewModel: PropuestaViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     var expanded by remember { mutableStateOf(false) }
     var nombre by remember { mutableStateOf("") }
     var categoria by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
     var mensajeError by remember { mutableStateOf("") }
+    val mensaje by viewModel.mensaje.collectAsState()
+    val error by viewModel.error.collectAsState()
+    val misPropuestas by viewModel.misPropuestas.collectAsState()
+
+    LaunchedEffect(idUsuario) {
+        viewModel.cargarMisPropuestas(idUsuario)
+    }
 
     val categorias = listOf(
         "Reciclaje",
@@ -135,7 +143,23 @@ fun CrearRetoEstudianteScreen(
                         fontWeight = FontWeight.Bold
                     )
                 }
+                if (mensaje != null) {
+                    Text(
+                        text = mensaje ?: "",
+                        color = Color(0xFF047857),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
+                if (error != null) {
+                    Text(
+                        text = error ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -156,18 +180,14 @@ fun CrearRetoEstudianteScreen(
                                 return@clickable
                             }
 
-                            TempData.retosPropuestos.add(
-                                RetoPropuesto(
-                                    id = TempData.retosPropuestos.size + 1,
-                                    nombre = nombre.trim(),
-                                    categoria = categoria,
-                                    descripcion = descripcion.trim(),
-                                    creadoPor = "Estudiante"
-                                )
+                            viewModel.crearPropuesta(
+                                idUsuario = idUsuario,
+                                titulo = nombre.trim(),
+                                descripcion = descripcion.trim(),
+                                categoria = categoria
                             )
 
-                            mensajeError = "Propuesta enviada para revisión"
-
+                            mensajeError = ""
                             nombre = ""
                             categoria = ""
                             descripcion = ""

@@ -31,6 +31,11 @@ import com.example.ecoretosapp.data.model.UsuarioResponse
 import com.example.ecoretosapp.data.model.InsigniaResponse
 import com.example.ecoretosapp.data.model.CrearRetoRequest
 import com.example.ecoretosapp.data.model.EditarRetoRequest
+import com.example.ecoretosapp.data.model.CrearPropuestaRequest
+import com.example.ecoretosapp.data.model.PropuestaResponse
+import com.example.ecoretosapp.data.model.RevisionPropuestaRequest
+
+
 
 interface ApiService {
 
@@ -110,4 +115,29 @@ interface ApiService {
 
     @GET("admin/retos")
     suspend fun getRetosAdmin(): Response<List<Reto>>
+
+    @POST("propuestas")
+    suspend fun crearPropuesta(
+        @Body request: CrearPropuestaRequest
+    ): Response<PropuestaResponse>
+
+    @GET("propuestas/mias/{idUsuario}")
+    suspend fun getMisPropuestas(
+        @Path("idUsuario") idUsuario: Int
+    ): Response<List<PropuestaResponse>>
+
+    @GET("admin/propuestas")
+    suspend fun getPropuestasPendientes(): Response<List<PropuestaResponse>>
+
+    @PUT("admin/propuestas/{id}/aprobar")
+    suspend fun aprobarPropuesta(
+        @Path("id") idPropuesta: Int,
+        @Body request: RevisionPropuestaRequest
+    ): Response<PropuestaResponse>
+
+    @PUT("admin/propuestas/{id}/rechazar")
+    suspend fun rechazarPropuesta(
+        @Path("id") idPropuesta: Int,
+        @Body request: RevisionPropuestaRequest
+    ): Response<PropuestaResponse>
 }

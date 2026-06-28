@@ -97,6 +97,7 @@ fun MainEstudianteScreen(idUsuario: Int, navController: NavController, onLogout:
                     )
 
                 2 -> CrearRetoEstudianteScreen(
+                    idUsuario = idUsuario,
                     volver = {
                         selectedItem = 0
                     }

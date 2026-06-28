@@ -48,6 +48,7 @@ fun AdminHome(
                     onMensajeError = { mensajeError = it },
                     onRetoEditando = { retoEditando = it }
                 )
+                adminRetoViewModel.cargarRetos()
                 pantalla = "crear"
             },
             irPropuestas = { pantalla = "propuestas" },
@@ -58,13 +59,8 @@ fun AdminHome(
 
         "propuestas" -> PropuestasRetosAdminScreen(
             volver = {
+                adminRetoViewModel.cargarRetos()
                 pantalla = "inicio"
-            },
-            onAceptar = { propuesta, puntos ->
-                // Luego conectamos propuestas reales
-            },
-            onRechazar = { propuesta ->
-                // Luego conectamos rechazo real
             }
         )
 
