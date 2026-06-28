@@ -1,13 +1,10 @@
 package com.example.ecoretosapp.data.model
 
-data class Reto(
-    val idReto: Int,
+data class EditarRetoRequest(
     val titulo: String,
     val descripcion: String,
     val puntos: Int,
     val dificultad: String,
     val tipoValidacion: String,
-    val fechaInicio: String? = null,
-    val fechaFin: String? = null,
-    val duracionHoras: Int? = null
+    val duracionHoras: Int
 )

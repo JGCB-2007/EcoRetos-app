@@ -29,6 +29,8 @@ import retrofit2.http.PUT
 import com.example.ecoretosapp.data.model.RankingResponse
 import com.example.ecoretosapp.data.model.UsuarioResponse
 import com.example.ecoretosapp.data.model.InsigniaResponse
+import com.example.ecoretosapp.data.model.CrearRetoRequest
+import com.example.ecoretosapp.data.model.EditarRetoRequest
 
 interface ApiService {
 
@@ -89,4 +91,23 @@ interface ApiService {
     suspend fun getInsigniasUsuario(
         @Path("idUsuario") idUsuario: Int
     ): Response<List<InsigniaResponse>>
+
+    @POST("admin/retos")
+    suspend fun crearRetoAdmin(
+        @Body request: CrearRetoRequest
+    ): Response<Reto>
+
+    @PUT("admin/retos/{idReto}")
+    suspend fun editarRetoAdmin(
+        @Path("idReto") idReto: Int,
+        @Body request: EditarRetoRequest
+    ): Response<Reto>
+
+    @DELETE("admin/retos/{idReto}")
+    suspend fun eliminarRetoAdmin(
+        @Path("idReto") idReto: Int
+    ): Response<ResponseBody>
+
+    @GET("admin/retos")
+    suspend fun getRetosAdmin(): Response<List<Reto>>
 }
