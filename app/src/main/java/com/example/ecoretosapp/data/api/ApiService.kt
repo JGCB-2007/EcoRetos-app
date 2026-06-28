@@ -18,6 +18,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import okhttp3.ResponseBody
 import retrofit2.http.DELETE
+import com.example.ecoretosapp.data.model.MisParticipacionesResponse
 
 interface ApiService {
 
@@ -40,4 +41,9 @@ interface ApiService {
         @Path("idReto") idReto: Int,
         @Path("idUsuario") idUsuario: Int
     ): Response<ResponseBody>
+
+    @GET("usuarios/{idUsuario}/participaciones")
+    suspend fun getParticipacionesUsuario(
+        @Path("idUsuario") idUsuario: Int
+    ): Response<List<MisParticipacionesResponse>>
 }

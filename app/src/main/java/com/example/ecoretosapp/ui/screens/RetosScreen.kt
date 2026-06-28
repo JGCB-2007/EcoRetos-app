@@ -35,8 +35,9 @@ fun RetosScreen(
     val mensaje by viewModel.mensaje.collectAsState()
     val retosAceptados by viewModel.retosAceptados.collectAsState()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(idUsuario) {
         viewModel.cargarRetos()
+        viewModel.cargarParticipaciones(idUsuario)
     }
 
     Box(

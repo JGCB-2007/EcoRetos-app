@@ -100,6 +100,7 @@ class RetoViewModel : ViewModel() {
                     _retosAceptados.value = _retosAceptados.value - idReto
 
                     cargarRetos()
+                    cargarParticipaciones(idUsuario)
                 } else {
                     _error.value = "No se pudo cancelar el reto"
                 }
@@ -126,6 +127,34 @@ class RetoViewModel : ViewModel() {
             _puntosCompletados.value += puntos
             _mensaje.value = "Reto completado: +$puntos puntos"
             _error.value = null
+        }
+    }
+
+    fun cargarParticipaciones(idUsuario: Int) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.apiService.getParticipacionesUsuario(idUsuario)
+
+                if (response.isSuccessful) {
+                    val participaciones = response.body() ?: emptyList()
+
+                    _retosAceptados.value = participaciones
+                        .filter {
+                            it.estado == "ACEPTADO" ||
+                                    it.estado == "ENVIADO" ||
+                                    it.estado == "APROBADO"
+                        }
+                        .map { it.idReto }
+                        .toSet()
+
+                    _error.value = null
+                } else {
+                    _error.value = "Error cargando participaciones: ${response.code()}"
+                }
+
+            } catch (e: Exception) {
+                _error.value = "Error conexión participaciones: ${e.message}"
+            }
         }
     }
 }
