@@ -23,17 +23,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecoretosapp.viewmodel.RetoViewModel
+import com.example.ecoretosapp.viewmodel.PerfilViewModel
 
 @Composable
 fun PerfilEstudianteScreen(
+    idUsuario: Int,
     retoViewModel: RetoViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    perfilViewModel: PerfilViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     onLogout: () -> Unit
-) {
+){
     val retosAceptados by retoViewModel.retosAceptados.collectAsState()
+    val usuario by perfilViewModel.usuario.collectAsState()
+    val error by perfilViewModel.error.collectAsState()
+    val insignias by perfilViewModel.insignias.collectAsState()
 
-    val nombre = "Estudiante UAM"
-    val puntos = 120
 
+    LaunchedEffect(idUsuario) {
+        perfilViewModel.cargarUsuario(idUsuario)
+        perfilViewModel.cargarInsignias(idUsuario)
+    }
+    val nombre = usuario?.nombreCompleto ?: "Cargando..."
+    val puntos = usuario?.puntosTotales ?: 0
+    val cif = usuario?.cif ?: "Sin CIF"
+    val correo = usuario?.correoInstitucional ?: "Sin correo"
+    val nivel = obtenerNivelEco(puntos)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -64,6 +77,13 @@ fun PerfilEstudianteScreen(
                     fontWeight = FontWeight.ExtraBold,
                     color = Color(0xFF0F172A)
                 )
+                if (error != null) {
+                    Text(
+                        text = error ?: "",
+                        color = Color.Red,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
             Card(
@@ -114,7 +134,17 @@ fun PerfilEstudianteScreen(
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White.copy(alpha = 0.90f)
                         )
+                        Text(
+                            text = cif,
+                            fontSize = 13.sp,
+                            color = Color.White.copy(alpha = 0.85f)
+                        )
 
+                        Text(
+                            text = correo,
+                            fontSize = 13.sp,
+                            color = Color.White.copy(alpha = 0.85f)
+                        )
                         Spacer(modifier = Modifier.height(18.dp))
 
                         Row(
@@ -129,13 +159,13 @@ fun PerfilEstudianteScreen(
 
                             PerfilStat(
                                 label = "Medallas",
-                                value = "3",
+                                value = insignias.size.toString(),
                                 modifier = Modifier.weight(1f)
                             )
 
                             PerfilStat(
                                 label = "Nivel",
-                                value = "Eco",
+                                value = nivel,
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -150,23 +180,21 @@ fun PerfilEstudianteScreen(
                 color = Color(0xFF0F172A)
             )
 
-            MedalCard(
-                icono = "🌿",
-                titulo = "Eco Novato",
-                descripcion = "Primeros pasos ecológicos"
-            )
-
-            MedalCard(
-                icono = "♻️",
-                titulo = "Reciclador Activo",
-                descripcion = "Participación en retos verdes"
-            )
-
-            MedalCard(
-                icono = "🏆",
-                titulo = "Guardián Verde",
-                descripcion = "Buen avance acumulando puntos"
-            )
+            if (insignias.isEmpty()) {
+                Text(
+                    text = "Aún no has obtenido insignias.",
+                    fontSize = 14.sp,
+                    color = Color(0xFF64748B)
+                )
+            } else {
+                insignias.forEach { insignia ->
+                    MedalCard(
+                        icono = insignia.iconoUrl ?: "🏅",
+                        titulo = insignia.nombre,
+                        descripcion = insignia.descripcion
+                    )
+                }
+            }
 
             LogoutCard(
                 onClick = onLogout
@@ -298,5 +326,13 @@ private fun MedalCard(
         }
     }
 }
-
+fun obtenerNivelEco(puntos: Int): String {
+    return when {
+        puntos >= 500 -> "Maestro"
+        puntos >= 300 -> "Guardián"
+        puntos >= 150 -> "Protector"
+        puntos >= 50 -> "Explorador"
+        else -> "Novato"
+    }
+}
 

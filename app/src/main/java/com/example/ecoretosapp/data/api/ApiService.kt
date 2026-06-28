@@ -27,6 +27,8 @@ import retrofit2.http.Part
 import com.example.ecoretosapp.data.model.AccionEvidenciaResponse
 import retrofit2.http.PUT
 import com.example.ecoretosapp.data.model.RankingResponse
+import com.example.ecoretosapp.data.model.UsuarioResponse
+import com.example.ecoretosapp.data.model.InsigniaResponse
 
 interface ApiService {
 
@@ -77,4 +79,14 @@ interface ApiService {
 
     @GET("ranking")
     suspend fun getRanking(): Response<List<RankingResponse>>
+
+    @GET("usuarios/{idUsuario}")
+    suspend fun getUsuario(
+        @Path("idUsuario") idUsuario: Int
+    ): Response<UsuarioResponse>
+
+    @GET("insignias/usuario/{idUsuario}")
+    suspend fun getInsigniasUsuario(
+        @Path("idUsuario") idUsuario: Int
+    ): Response<List<InsigniaResponse>>
 }

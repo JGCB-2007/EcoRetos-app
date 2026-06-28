@@ -104,9 +104,11 @@ fun MainEstudianteScreen(idUsuario: Int, navController: NavController, onLogout:
 
                 3 -> RankingScreen()
 
-                4 -> PerfilEstudianteScreen(
-                    onLogout = onLogout
-                )
+                    4 -> PerfilEstudianteScreen(
+                        idUsuario = idUsuario,
+                        retoViewModel = retoViewModel,
+                        onLogout = onLogout
+                    )
             }
         }
     }
