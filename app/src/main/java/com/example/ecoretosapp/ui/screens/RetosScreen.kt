@@ -36,6 +36,7 @@ fun RetosScreen(
     val mensaje by viewModel.mensaje.collectAsState()
     val retosAceptados by viewModel.retosAceptados.collectAsState()
 
+
     LaunchedEffect(idUsuario) {
         viewModel.cargarRetos()
         viewModel.cargarParticipaciones(idUsuario)
@@ -113,8 +114,16 @@ fun RetosScreen(
                     }
                 }
             }
-
-            items(retosAceptadosLista) { reto ->
+            val retosEnCurso = retos.filter { reto ->
+                participaciones.any { participacion ->
+                    participacion.idReto == reto.idReto &&
+                            (
+                                    participacion.estado == "ACEPTADO" ||
+                                            participacion.estado == "ENVIADO"
+                                    )
+                }
+            }
+            items(retosEnCurso) { reto ->
                 val aceptado = true
 
                 Card(

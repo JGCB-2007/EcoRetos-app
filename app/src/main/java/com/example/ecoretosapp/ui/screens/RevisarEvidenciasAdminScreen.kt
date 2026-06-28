@@ -30,6 +30,7 @@ fun RevisarEvidenciasAdminScreen(
 ) {
     val evidencias by viewModel.evidencias.collectAsState()
     val error by viewModel.error.collectAsState()
+    val mensaje by viewModel.mensaje.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.cargarEvidenciasPendientes()
@@ -91,7 +92,15 @@ fun RevisarEvidenciasAdminScreen(
                 )
             }
         }
-
+        if (mensaje != null) {
+            item {
+                Text(
+                    text = mensaje ?: "",
+                    color = Color(0xFF047857),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
         if (evidencias.isEmpty()) {
             item {
                 Card(
@@ -111,8 +120,12 @@ fun RevisarEvidenciasAdminScreen(
             items(evidencias) { evidencia ->
                 EvidenciaAdminCard(
                     evidencia = evidencia,
-                    onAprobar = onAprobar,
-                    onRechazar = onRechazar
+                    onAprobar = {
+                        viewModel.aprobarEvidencia(it.idEvidencia)
+                    },
+                    onRechazar = {
+                        viewModel.rechazarEvidencia(it.idEvidencia)
+                    }
                 )
             }
         }
@@ -141,7 +154,7 @@ fun EvidenciaAdminCard(
             )
 
             Text(
-                text = "Enviado por: ${evidencia.nombreEstudiante}",
+                text = "Enviado por: ${evidencia.nombreUsuario}",
                 fontSize = 14.sp
             )
 

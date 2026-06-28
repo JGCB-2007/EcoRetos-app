@@ -36,4 +36,41 @@ class AdminEvidenciaViewModel : ViewModel() {
             }
         }
     }
+    fun aprobarEvidencia(idEvidencia: Int) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.apiService.aprobarEvidencia(idEvidencia)
+
+                if (response.isSuccessful) {
+                    _mensaje.value = response.body()?.mensaje ?: "Evidencia aprobada"
+                    _error.value = null
+                    cargarEvidenciasPendientes()
+                } else {
+                    _error.value = response.errorBody()?.string() ?: "No se pudo aprobar"
+                }
+
+            } catch (e: Exception) {
+                _error.value = "Error al aprobar: ${e.message}"
+            }
+        }
+    }
+
+    fun rechazarEvidencia(idEvidencia: Int) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.apiService.rechazarEvidencia(idEvidencia)
+
+                if (response.isSuccessful) {
+                    _mensaje.value = response.body()?.mensaje ?: "Evidencia rechazada"
+                    _error.value = null
+                    cargarEvidenciasPendientes()
+                } else {
+                    _error.value = response.errorBody()?.string() ?: "No se pudo rechazar"
+                }
+
+            } catch (e: Exception) {
+                _error.value = "Error al rechazar: ${e.message}"
+            }
+        }
+    }
 }

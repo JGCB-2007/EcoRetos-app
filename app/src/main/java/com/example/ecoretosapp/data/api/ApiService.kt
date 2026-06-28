@@ -24,6 +24,8 @@ import com.example.ecoretosapp.data.model.EvidenciaResponse
 import okhttp3.MultipartBody
 import retrofit2.http.Multipart
 import retrofit2.http.Part
+import com.example.ecoretosapp.data.model.AccionEvidenciaResponse
+import retrofit2.http.PUT
 
 interface ApiService {
 
@@ -61,4 +63,14 @@ interface ApiService {
 
     @GET("admin/evidencias/pendientes")
     suspend fun getEvidenciasPendientes(): Response<List<EvidenciaAdminResponse>>
+
+    @PUT("admin/evidencias/{idEvidencia}/aprobar")
+    suspend fun aprobarEvidencia(
+        @Path("idEvidencia") idEvidencia: Int
+    ): Response<AccionEvidenciaResponse>
+
+    @PUT("admin/evidencias/{idEvidencia}/rechazar")
+    suspend fun rechazarEvidencia(
+        @Path("idEvidencia") idEvidencia: Int
+    ): Response<AccionEvidenciaResponse>
 }
