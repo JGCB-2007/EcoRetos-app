@@ -35,7 +35,7 @@ import com.example.ecoretosapp.data.model.CrearPropuestaRequest
 import com.example.ecoretosapp.data.model.PropuestaResponse
 import com.example.ecoretosapp.data.model.RevisionPropuestaRequest
 import com.example.ecoretosapp.data.model.ImpactoUsuarioResponse
-
+import com.example.ecoretosapp.data.model.CrearInsigniaRequest
 
 
 interface ApiService {
@@ -146,4 +146,9 @@ interface ApiService {
     suspend fun getImpactoUsuario(
         @Path("idUsuario") idUsuario: Int
     ): Response<ImpactoUsuarioResponse>
+
+    @POST("admin/insignias")
+    suspend fun crearInsignia(
+        @Body request: CrearInsigniaRequest
+    ): Response<InsigniaResponse>
 }

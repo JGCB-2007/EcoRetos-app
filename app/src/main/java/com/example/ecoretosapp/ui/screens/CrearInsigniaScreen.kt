@@ -13,18 +13,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ecoretosapp.viewmodel.AdminInsigniaViewModel
+
 
 @Composable
 fun CrearInsigniaScreen(
-    volver: () -> Unit
-) {
+    volver: () -> Unit,
+    viewModel: AdminInsigniaViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+){
 
     var nombre by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
     var puntos by remember { mutableStateOf("") }
     var icono by remember { mutableStateOf("🏆") }
     var mensaje by remember { mutableStateOf("") }
-
+    val mensajeApi by viewModel.mensaje.collectAsState()
+    val errorApi by viewModel.error.collectAsState()
     val iconos = listOf(
         "🏆",
         "🌱",
@@ -146,7 +150,21 @@ fun CrearInsigniaScreen(
                 fontWeight = FontWeight.Bold
             )
         }
+        if (mensajeApi != null) {
+            Text(
+                text = mensajeApi ?: "",
+                color = Color(0xFF15803D),
+                fontWeight = FontWeight.Bold
+            )
+        }
 
+        if (errorApi != null) {
+            Text(
+                text = errorApi ?: "",
+                color = MaterialTheme.colorScheme.error,
+                fontWeight = FontWeight.Bold
+            )
+        }
         Button(
             onClick = {
 
@@ -159,11 +177,25 @@ fun CrearInsigniaScreen(
                     return@Button
                 }
 
-                mensaje = "Insignia creada correctamente"
+                val puntosInt = puntos.toIntOrNull()
 
+                if (puntosInt == null || puntosInt <= 0) {
+                    mensaje = "Los puntos deben ser un número válido mayor que 0"
+                    return@Button
+                }
+
+                viewModel.crearInsignia(
+                    nombre = nombre.trim(),
+                    descripcion = descripcion.trim(),
+                    puntosMinimos = puntosInt,
+                    iconoUrl = icono
+                )
+
+                mensaje = ""
                 nombre = ""
                 descripcion = ""
                 puntos = ""
+                icono = "🏆"
             },
             modifier = Modifier.fillMaxWidth()
         ) {
