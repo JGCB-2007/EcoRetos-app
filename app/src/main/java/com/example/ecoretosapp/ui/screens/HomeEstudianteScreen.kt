@@ -25,11 +25,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ecoretosapp.viewmodel.RetoViewModel
+import com.example.ecoretosapp.viewmodel.ImpactoUsuarioViewModel
+
 
 @Composable
 fun HomeEstudianteScreen(
     idUsuario: Int,
     viewModel: RetoViewModel = viewModel(),
+    impactoViewModel: ImpactoUsuarioViewModel = viewModel(),
     navController: NavController
 ) {
     val retos by viewModel.retos.collectAsState()
@@ -38,11 +41,14 @@ fun HomeEstudianteScreen(
     val retosAceptados by viewModel.retosAceptados.collectAsState()
     val puntosCompletados by viewModel.puntosCompletados.collectAsState()
     val retosCompletados by viewModel.retosCompletados.collectAsState()
-
+    val impacto by impactoViewModel.impacto.collectAsState()
+    val errorImpacto by impactoViewModel.error.collectAsState()
     val retosPendientes = retos.filter { !retosAceptados.contains(it.idReto) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(idUsuario) {
         viewModel.cargarRetos()
+        viewModel.cargarParticipaciones(idUsuario)
+        impactoViewModel.cargarImpacto(idUsuario)
     }
 
     Box(
@@ -65,8 +71,10 @@ fun HomeEstudianteScreen(
 
             item {
                 ImpactCard(
-                    totalRetos = retosCompletados.size,
-                    puntos = puntosCompletados
+                    totalRetos = impacto?.retosCompletados?.toInt() ?: 0,
+                    puntos = impacto?.puntosTotales ?: 0,
+                    racha = impacto?.rachaDias ?: 0,
+                    ranking = impacto?.posicionRanking ?: 0
                 )
             }
 
@@ -90,6 +98,15 @@ fun HomeEstudianteScreen(
                 }
             }
 
+            if (errorImpacto != null) {
+                item {
+                    Text(
+                        text = errorImpacto ?: "",
+                        color = Color(0xFFDC2626),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -162,8 +179,10 @@ private fun HeaderRetos() {
 @Composable
 private fun ImpactCard(
     totalRetos: Int,
-    puntos: Int
-) {
+    puntos: Int,
+    racha: Int,
+    ranking: Int
+){
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(32.dp),
@@ -223,8 +242,8 @@ private fun ImpactCard(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     MiniStat("Completados", totalRetos.toString(), Modifier.weight(1f))
-                    MiniStat("Racha", "7", Modifier.weight(1f))
-                    MiniStat("Ranking", "#3", Modifier.weight(1f))
+                    MiniStat("Racha", racha.toString(), Modifier.weight(1f))
+                    MiniStat("Ranking", if (ranking > 0) "#$ranking" else "-", Modifier.weight(1f))
                 }
             }
         }

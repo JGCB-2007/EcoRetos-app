@@ -34,6 +34,7 @@ import com.example.ecoretosapp.data.model.EditarRetoRequest
 import com.example.ecoretosapp.data.model.CrearPropuestaRequest
 import com.example.ecoretosapp.data.model.PropuestaResponse
 import com.example.ecoretosapp.data.model.RevisionPropuestaRequest
+import com.example.ecoretosapp.data.model.ImpactoUsuarioResponse
 
 
 
@@ -140,4 +141,9 @@ interface ApiService {
         @Path("id") idPropuesta: Int,
         @Body request: RevisionPropuestaRequest
     ): Response<PropuestaResponse>
+
+    @GET("usuarios/{idUsuario}/impacto")
+    suspend fun getImpactoUsuario(
+        @Path("idUsuario") idUsuario: Int
+    ): Response<ImpactoUsuarioResponse>
 }
