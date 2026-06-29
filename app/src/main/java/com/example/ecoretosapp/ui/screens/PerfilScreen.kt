@@ -46,12 +46,14 @@ fun PerfilEstudianteScreen(
         perfilViewModel.cargarUsuario(idUsuario)
         perfilViewModel.cargarInsignias(idUsuario)
         perfilViewModel.cargarImpacto(idUsuario)
+        perfilViewModel.cargarTodasLasInsignias()
     }
     val nombre = usuario?.nombreCompleto ?: "Cargando..."
     val puntos = usuario?.puntosTotales ?: 0
     val cif = usuario?.cif ?: "Sin CIF"
     val correo = usuario?.correoInstitucional ?: "Sin correo"
     val nivel = obtenerNivelEco(puntos)
+    val todasLasInsignias by perfilViewModel.todasLasInsignias.collectAsState()
 
     val iniciales = nombre
         .split(" ")
@@ -195,20 +197,22 @@ fun PerfilEstudianteScreen(
                 color = Color(0xFF0F172A)
             )
 
-            if (insignias.isEmpty()) {
-                Text(
-                    text = "Aún no has obtenido insignias.",
-                    fontSize = 14.sp,
-                    color = Color(0xFF64748B)
-                )
-            } else {
-                insignias.forEach { insignia ->
-                    MedalCard(
-                        icono = insignia.iconoUrl ?: "🏅",
-                        titulo = insignia.nombre,
-                        descripcion = insignia.descripcion
-                    )
+            todasLasInsignias.forEach { insignia ->
+
+                val obtenida = insignias.any {
+                    it.idInsignia == insignia.idInsignia
                 }
+
+                MedalCard(
+                    icono = if (obtenida) insignia.iconoUrl ?: "🏅" else "🔒",
+                    titulo = insignia.nombre,
+                    descripcion =
+                        if (obtenida)
+                            insignia.descripcion
+                        else
+                            "Disponible desde ${insignia.puntosMinimos} puntos",
+                    desbloqueada = obtenida
+                )
             }
 
             LogoutCard(
@@ -323,12 +327,17 @@ private fun PerfilStat(
 private fun MedalCard(
     icono: String,
     titulo: String,
-    descripcion: String
-) {
+    descripcion: String,
+    desbloqueada: Boolean
+){
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor =
+            if (desbloqueada)
+                Color.White
+            else
+                Color(0xFFF8FAFC)),
         elevation = CardDefaults.cardElevation(3.dp)
     ) {
         Row(

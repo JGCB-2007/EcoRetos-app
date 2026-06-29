@@ -151,4 +151,7 @@ interface ApiService {
     suspend fun crearInsignia(
         @Body request: CrearInsigniaRequest
     ): Response<InsigniaResponse>
+
+    @GET("insignias")
+    suspend fun getInsignias(): Response<List<InsigniaResponse>>
 }

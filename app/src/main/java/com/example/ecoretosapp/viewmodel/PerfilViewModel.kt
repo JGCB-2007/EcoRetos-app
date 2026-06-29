@@ -22,6 +22,9 @@ class PerfilViewModel : ViewModel() {
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
+    private val _todasLasInsignias = MutableStateFlow<List<InsigniaResponse>>(emptyList())
+    val todasLasInsignias: StateFlow<List<InsigniaResponse>> = _todasLasInsignias
+
     fun cargarUsuario(idUsuario: Int) {
         viewModelScope.launch {
             try {
@@ -39,6 +42,20 @@ class PerfilViewModel : ViewModel() {
         }
     }
 
+    fun cargarTodasLasInsignias() {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.apiService.getInsignias()
+
+                if (response.isSuccessful) {
+                    _todasLasInsignias.value = response.body() ?: emptyList()
+                }
+
+            } catch (_: Exception) {
+
+            }
+        }
+    }
     fun cargarImpacto(idUsuario: Int) {
         viewModelScope.launch {
             try {
