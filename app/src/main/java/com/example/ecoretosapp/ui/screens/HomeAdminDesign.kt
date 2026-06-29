@@ -80,7 +80,7 @@ fun AdminInicioDesign(
                                 )
                             )
                         )
-                        .padding(20.dp),
+                        .padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
@@ -105,14 +105,14 @@ fun AdminInicioDesign(
 
                     Box(
                         modifier = Modifier
-                            .size(80.dp)
+                            .size(64.dp)
                             .background(
                                 MaterialTheme.colorScheme.surface,
                                 RoundedCornerShape(20.dp)
                             ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("🧑‍💼", fontSize = 30.sp)
+                        Text("🧑‍💼", fontSize = 26.sp)
                     }
                 }
             }
@@ -281,34 +281,45 @@ fun AdminResumenCard(
     modifier: Modifier
 ) {
     Card(
-        modifier = modifier.height(120.dp),
-        shape = RoundedCornerShape(20.dp),
+        modifier = modifier.height(92.dp),
+        shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(3.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Box(
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(42.dp)
                     .background(Color(0xFFD1FAE5), RoundedCornerShape(14.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(icono, fontSize = 22.sp)
             }
 
-            Text(
-                text = titulo,
-                fontSize = 14.sp
-            )
+            Spacer(modifier = Modifier.width(10.dp))
 
-            Text(
-                text = valor,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Column {
+                Text(
+                    text = titulo,
+                    fontSize = 12.sp,
+                    color = Color(0xFF64748B),
+                    maxLines = 1
+                )
+
+                Text(
+                    text = valor,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0F172A)
+                )
+            }
         }
     }
 }
