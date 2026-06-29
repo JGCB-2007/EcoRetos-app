@@ -322,14 +322,24 @@ fun EnviarEvidenciaScreen(
                         )
                     }
 
-                    OutlinedButton(
+                    Button(
                         onClick = volver,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp),
-                        shape = RoundedCornerShape(18.dp)
+                            .height(52.dp),
+                        shape = RoundedCornerShape(18.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFF1F5F9),
+                            contentColor = Color(0xFF334155)
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 0.dp
+                        )
                     ) {
-                        Text("Volver")
+                        Text(
+                            text = "Volver",
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }
