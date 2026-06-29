@@ -52,6 +52,12 @@ fun PerfilEstudianteScreen(
     val cif = usuario?.cif ?: "Sin CIF"
     val correo = usuario?.correoInstitucional ?: "Sin correo"
     val nivel = obtenerNivelEco(puntos)
+
+    val iniciales = nombre
+        .split(" ")
+        .filter { it.isNotBlank() }
+        .take(2)
+        .joinToString("") { it.first().uppercase() }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -121,7 +127,12 @@ fun PerfilEstudianteScreen(
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("👤", fontSize = 42.sp)
+                            Text(
+                                text = iniciales,
+                                fontSize = 32.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
                         }
 
                         Spacer(modifier = Modifier.height(12.dp))
