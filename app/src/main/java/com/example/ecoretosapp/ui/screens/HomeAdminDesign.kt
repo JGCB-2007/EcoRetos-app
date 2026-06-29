@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -23,7 +22,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Brush
-
+import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ecoretosapp.viewmodel.AdminDashboardViewModel
+import com.example.ecoretosapp.ui.components.ConfirmacionDialog
+import androidx.compose.runtime.*
 
 @Composable
 fun AdminInicioDesign(
@@ -31,8 +34,17 @@ fun AdminInicioDesign(
     irPropuestas: () -> Unit,
     irRevisarEvidencias: () -> Unit,
     irCrearInsignia: () -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    dashboardViewModel: AdminDashboardViewModel = viewModel()
 ){
+
+    val dashboard by dashboardViewModel.dashboard.collectAsState()
+    val error by dashboardViewModel.error.collectAsState()
+    var confirmarLogout by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        dashboardViewModel.cargarDashboard()
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -105,19 +117,33 @@ fun AdminInicioDesign(
                 }
             }
         }
-
+        if (error != null) {
+            item {
+                Text(
+                    text = error ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
         // TARJETAS SUPERIORES
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                AdminResumenCard("🎯", "Retos activos", "12", Modifier.weight(1f))
-                AdminResumenCard("📷", "Pendientes", "8", Modifier.weight(1f))
+                AdminResumenCard("🎯", "Retos activos", "${dashboard?.retosActivos ?: 0}", Modifier.weight(1f))
+                AdminResumenCard("📷", "Evidencias", "${dashboard?.evidenciasPendientes ?: 0}", Modifier.weight(1f))
             }
         }
 
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                AdminResumenCard("🏆", "Insignias", "6", Modifier.weight(1f))
-                AdminResumenCard("👥", "Usuarios", "120", Modifier.weight(1f))
+                AdminResumenCard("🏆", "Insignias", "${dashboard?.insigniasActivas ?: 0}", Modifier.weight(1f))
+                AdminResumenCard("👥", "Usuarios", "${dashboard?.usuariosRegistrados ?: 0}", Modifier.weight(1f))
+            }
+        }
+        item {
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                AdminResumenCard("📝", "Propuestas", "${dashboard?.propuestasPendientes ?: 0}", Modifier.weight(1f))
+                AdminResumenCard("📊", "Sistema", "Activo", Modifier.weight(1f))
             }
         }
 
@@ -125,7 +151,7 @@ fun AdminInicioDesign(
             Card(
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface // 🔥 mismo blanco que los otros
+                    containerColor = MaterialTheme.colorScheme.surface // mismo blanco que los otros
                 ),
                 elevation = CardDefaults.cardElevation(3.dp)
             ) {
@@ -220,12 +246,30 @@ fun AdminInicioDesign(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     LogoutAdminCard(
-                        onClick = onLogout
+                        onClick = {
+                            confirmarLogout = true
+                        }
                     )
                 }
             }
         }
 
+    }
+
+    if (confirmarLogout) {
+        ConfirmacionDialog(
+            titulo = "Cerrar sesión",
+            mensaje = "¿Seguro que deseas cerrar sesión?",
+            textoConfirmar = "Cerrar sesión",
+            textoCancelar = "Cancelar",
+            onConfirmar = {
+                confirmarLogout = false
+                onLogout()
+            },
+            onCancelar = {
+                confirmarLogout = false
+            }
+        )
     }
 }
 

@@ -36,7 +36,7 @@ import com.example.ecoretosapp.data.model.PropuestaResponse
 import com.example.ecoretosapp.data.model.RevisionPropuestaRequest
 import com.example.ecoretosapp.data.model.ImpactoUsuarioResponse
 import com.example.ecoretosapp.data.model.CrearInsigniaRequest
-
+import com.example.ecoretosapp.data.model.AdminDashboardResponse
 
 interface ApiService {
 
@@ -154,4 +154,7 @@ interface ApiService {
 
     @GET("insignias")
     suspend fun getInsignias(): Response<List<InsigniaResponse>>
+
+    @GET("admin/dashboard")
+    suspend fun getAdminDashboard(): Response<AdminDashboardResponse>
 }
