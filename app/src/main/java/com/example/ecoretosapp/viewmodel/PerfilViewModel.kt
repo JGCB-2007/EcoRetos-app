@@ -8,13 +8,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import com.example.ecoretosapp.data.model.InsigniaResponse
-
+import com.example.ecoretosapp.data.model.ImpactoUsuarioResponse
 class PerfilViewModel : ViewModel() {
 
     private val _insignias = MutableStateFlow<List<InsigniaResponse>>(emptyList())
     val insignias: StateFlow<List<InsigniaResponse>> = _insignias
     private val _usuario = MutableStateFlow<UsuarioResponse?>(null)
     val usuario: StateFlow<UsuarioResponse?> = _usuario
+
+    private val _impacto = MutableStateFlow<ImpactoUsuarioResponse?>(null)
+    val impacto: StateFlow<ImpactoUsuarioResponse?> = _impacto
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
@@ -32,6 +35,23 @@ class PerfilViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 _error.value = "Error conexión: ${e.message}"
+            }
+        }
+    }
+
+    fun cargarImpacto(idUsuario: Int) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.apiService.getImpactoUsuario(idUsuario)
+
+                if (response.isSuccessful) {
+                    _impacto.value = response.body()
+                    _error.value = null
+                } else {
+                    _error.value = "No se pudo cargar el impacto del usuario"
+                }
+            } catch (e: Exception) {
+                _error.value = "Error conexión impacto: ${e.message}"
             }
         }
     }

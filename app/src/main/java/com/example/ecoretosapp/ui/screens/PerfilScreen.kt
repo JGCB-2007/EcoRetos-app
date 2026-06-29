@@ -37,11 +37,15 @@ fun PerfilEstudianteScreen(
     val usuario by perfilViewModel.usuario.collectAsState()
     val error by perfilViewModel.error.collectAsState()
     val insignias by perfilViewModel.insignias.collectAsState()
+    val impacto by perfilViewModel.impacto.collectAsState()
+
     var confirmarLogout by remember { mutableStateOf(false) }
+
 
     LaunchedEffect(idUsuario) {
         perfilViewModel.cargarUsuario(idUsuario)
         perfilViewModel.cargarInsignias(idUsuario)
+        perfilViewModel.cargarImpacto(idUsuario)
     }
     val nombre = usuario?.nombreCompleto ?: "Cargando..."
     val puntos = usuario?.puntosTotales ?: 0
@@ -154,10 +158,9 @@ fun PerfilEstudianteScreen(
                         ) {
                             PerfilStat(
                                 label = "Retos",
-                                value = retosAceptados.size.toString(),
+                                value = (impacto?.retosCompletados ?: 0).toString(),
                                 modifier = Modifier.weight(1f)
                             )
-
                             PerfilStat(
                                 label = "Medallas",
                                 value = insignias.size.toString(),
