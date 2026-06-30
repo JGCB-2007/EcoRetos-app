@@ -181,7 +181,7 @@ Una mirada rápida a las pantallas principales de **EcoRetos UAM**, tanto para e
 
 ### Inicio de sesión
 
-<img src="docs/login.png" width="280"/>
+<img src="docs/login.jpeg" width="280"/>
 
 Acceso según rol: estudiante o administrador.
 
@@ -190,7 +190,7 @@ Acceso según rol: estudiante o administrador.
 
 ### Inicio del estudiante
 
-<img src="docs/inicio.png" width="280"/>
+<img src="docs/inicio.jpeg" width="280"/>
 
 Resumen de retos, puntos, racha e impacto personal.
 
@@ -208,7 +208,7 @@ Resumen de retos, puntos, racha e impacto personal.
 
 ### Ranking
 
-<img src="docs/ranking.png" width="230"/>
+<img src="docs/ranking.jpeg" width="230"/>
 
 Clasificación de estudiantes por puntos acumulados.
 
@@ -217,7 +217,7 @@ Clasificación de estudiantes por puntos acumulados.
 
 ### Perfil
 
-<img src="docs/perfil.png" width="230"/>
+<img src="docs/perfil.jpeg" width="230"/>
 
 Datos personales, nivel ecológico e insignias.
 
@@ -226,7 +226,7 @@ Datos personales, nivel ecológico e insignias.
 
 ### Evidencias
 
-<img src="docs/evidencias.png" width="230"/>
+<img src="docs/evidencias.jpeg" width="230"/>
 
 Visualización y revisión de evidencias enviadas.
 
