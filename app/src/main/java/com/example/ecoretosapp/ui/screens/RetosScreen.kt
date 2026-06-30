@@ -22,6 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ecoretosapp.ui.components.BotonRecargar
+import com.example.ecoretosapp.ui.components.IconoReto
 import com.example.ecoretosapp.viewmodel.RetoViewModel
 
 @Composable
@@ -29,12 +31,13 @@ fun RetosScreen(
     idUsuario: Int,
     onEnviarEvidencia: (com.example.ecoretosapp.data.model.Reto) -> Unit,
     viewModel: RetoViewModel = viewModel()
-){
+) {
     val participaciones by viewModel.participaciones.collectAsState()
     val retos by viewModel.retos.collectAsState()
     val error by viewModel.error.collectAsState()
     val mensaje by viewModel.mensaje.collectAsState()
     val retosAceptados by viewModel.retosAceptados.collectAsState()
+    val estaCargando by viewModel.cargando.collectAsState()
 
 
     LaunchedEffect(idUsuario) {
@@ -57,18 +60,33 @@ fun RetosScreen(
             contentPadding = PaddingValues(bottom = 90.dp)
         ) {
             item {
-                Column {
-                    Text(
-                        text = "Mis retos aceptados",
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color(0xFF0F172A)
-                    )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = "Mis retos aceptados",
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Color(0xFF0F172A)
+                        )
 
-                    Text(
-                        text = "Aquí aparecen los retos que ya aceptaste.",
-                        fontSize = 14.sp,
-                        color = Color(0xFF64748B)
+                        Text(
+                            text = "Aquí aparecen los retos que ya aceptaste.",
+                            fontSize = 14.sp,
+                            color = Color(0xFF64748B)
+                        )
+                    }
+
+                    BotonRecargar(
+                        onRecargar = {
+                            viewModel.cargarRetos()
+                            viewModel.cargarParticipaciones(idUsuario)
+                        }
                     )
                 }
             }
@@ -139,14 +157,15 @@ fun RetosScreen(
                             Box(
                                 modifier = Modifier
                                     .size(56.dp)
-                                    .background(Color(0xFFD1FAE5), RoundedCornerShape(18.dp)),
+                                    .background(
+                                        Color.White,
+                                        RoundedCornerShape(18.dp)
+                                    ),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = if (aceptado) "✅" else "♻️",
-                                    fontSize = 30.sp
-                                )
+                                IconoReto(size = 56.dp)
                             }
+
 
                             Spacer(modifier = Modifier.width(14.dp))
 
@@ -173,7 +192,9 @@ fun RetosScreen(
                                         text = if (aceptado) "Aceptado" else "+${reto.puntos}",
                                         modifier = Modifier
                                             .background(
-                                                if (aceptado) Color(0xFFD1FAE5) else Color(0xFFDCFCE7),
+                                                if (aceptado) Color(0xFFD1FAE5) else Color(
+                                                    0xFFDCFCE7
+                                                ),
                                                 RoundedCornerShape(50.dp)
                                             )
                                             .padding(horizontal = 12.dp, vertical = 6.dp),
@@ -284,5 +305,43 @@ fun RetosScreen(
                 }
             }
         }
+
+        if (estaCargando) {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(
+                        Color.White.copy(alpha = 0.92f)
+                    )
+                    .clickable { },
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    CircularProgressIndicator(
+                        color = Color(0xFF10B981),
+                        trackColor = Color(0xFFD1FAE5),
+                        strokeWidth = 5.dp
+                    )
+
+                    Text(
+                        text = "Actualizando retos...",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF047857)
+                    )
+
+                    Text(
+                        text = "Consultando tus participaciones",
+                        fontSize = 13.sp,
+                        color = Color(0xFF64748B)
+                    )
+                }
+            }
+        }
     }
 }
+
+

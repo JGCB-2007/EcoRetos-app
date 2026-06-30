@@ -7,26 +7,28 @@ package com.example.ecoretosapp.ui.screens
  */
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.clickable
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.ecoretosapp.viewmodel.RetoViewModel
+import com.example.ecoretosapp.ui.components.BotonRecargar
+import com.example.ecoretosapp.ui.components.IconoReto
 import com.example.ecoretosapp.viewmodel.ImpactoUsuarioViewModel
-
+import com.example.ecoretosapp.viewmodel.RetoViewModel
 
 @Composable
 fun HomeEstudianteScreen(
@@ -39,12 +41,17 @@ fun HomeEstudianteScreen(
     val error by viewModel.error.collectAsState()
     val mensaje by viewModel.mensaje.collectAsState()
     val retosAceptados by viewModel.retosAceptados.collectAsState()
-    val puntosCompletados by viewModel.puntosCompletados.collectAsState()
-    val retosCompletados by viewModel.retosCompletados.collectAsState()
     val impacto by impactoViewModel.impacto.collectAsState()
     val errorImpacto by impactoViewModel.error.collectAsState()
-    val retosPendientes = retos.filter { !retosAceptados.contains(it.idReto) }
 
+    val retosPendientes = retos.filter { reto ->
+        !retosAceptados.contains(reto.idReto)
+    }
+
+    /*
+     * Recarga automática cada vez que el usuario
+     * entra a esta pantalla.
+     */
     LaunchedEffect(idUsuario) {
         viewModel.cargarRetos()
         viewModel.cargarParticipaciones(idUsuario)
@@ -56,7 +63,11 @@ fun HomeEstudianteScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    listOf(Color(0xFFECFDF5), Color.White, Color(0xFFF7FEE7))
+                    listOf(
+                        Color(0xFFECFDF5),
+                        Color.White,
+                        Color(0xFFF7FEE7)
+                    )
                 )
             )
             .padding(16.dp)
@@ -66,7 +77,13 @@ fun HomeEstudianteScreen(
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
             item {
-                HeaderRetos()
+                HeaderRetos(
+                    onRecargar = {
+                        viewModel.cargarRetos()
+                        viewModel.cargarParticipaciones(idUsuario)
+                        impactoViewModel.cargarImpacto(idUsuario)
+                    }
+                )
             }
 
             item {
@@ -107,6 +124,7 @@ fun HomeEstudianteScreen(
                     )
                 }
             }
+
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -159,20 +177,24 @@ fun HomeEstudianteScreen(
 }
 
 @Composable
-private fun HeaderRetos() {
+private fun HeaderRetos(
+    onRecargar: () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column {
-            Text(
-                text = "Retos ecológicos",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color(0xFF0F172A)
-            )
-        }
+        Text(
+            text = "Retos ecológicos",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = Color(0xFF0F172A)
+        )
+
+        BotonRecargar(
+            onRecargar = onRecargar
+        )
     }
 }
 
@@ -182,18 +204,23 @@ private fun ImpactCard(
     puntos: Int,
     racha: Int,
     ranking: Int
-){
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(32.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
+        ),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Box(
             modifier = Modifier
                 .background(
                     Brush.linearGradient(
-                        listOf(Color(0xFF10B981), Color(0xFF84CC16))
+                        listOf(
+                            Color(0xFF10B981),
+                            Color(0xFF84CC16)
+                        )
                     )
                 )
                 .padding(20.dp)
@@ -228,10 +255,16 @@ private fun ImpactCard(
                     Box(
                         modifier = Modifier
                             .size(72.dp)
-                            .background(Color.White.copy(alpha = 0.20f), RoundedCornerShape(24.dp)),
+                            .background(
+                                Color.White.copy(alpha = 0.20f),
+                                RoundedCornerShape(24.dp)
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = "🌿", fontSize = 42.sp)
+                        Text(
+                            text = "🌿",
+                            fontSize = 42.sp
+                        )
                     }
                 }
 
@@ -241,9 +274,23 @@ private fun ImpactCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    MiniStat("Completados", totalRetos.toString(), Modifier.weight(1f))
-                    MiniStat("Racha", racha.toString(), Modifier.weight(1f))
-                    MiniStat("Ranking", if (ranking > 0) "#$ranking" else "-", Modifier.weight(1f))
+                    MiniStat(
+                        label = "Completados",
+                        value = totalRetos.toString(),
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    MiniStat(
+                        label = "Racha",
+                        value = racha.toString(),
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    MiniStat(
+                        label = "Ranking",
+                        value = if (ranking > 0) "#$ranking" else "-",
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             }
         }
@@ -258,7 +305,10 @@ private fun MiniStat(
 ) {
     Column(
         modifier = modifier
-            .background(Color.White.copy(alpha = 0.20f), RoundedCornerShape(18.dp))
+            .background(
+                Color.White.copy(alpha = 0.20f),
+                RoundedCornerShape(18.dp)
+            )
             .padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -288,7 +338,9 @@ private fun RetoCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(
@@ -298,12 +350,10 @@ private fun RetoCard(
                 verticalAlignment = Alignment.Top
             ) {
                 Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .background(Color(0xFFD1FAE5), RoundedCornerShape(18.dp)),
+                    modifier = Modifier.size(56.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "♻️", fontSize = 30.sp)
+                    IconoReto(size = 56.dp)
                 }
 
                 Spacer(modifier = Modifier.width(14.dp))
@@ -336,8 +386,14 @@ private fun RetoCard(
                         Text(
                             text = "+$puntos",
                             modifier = Modifier
-                                .background(Color(0xFFDCFCE7), RoundedCornerShape(50.dp))
-                                .padding(horizontal = 12.dp, vertical = 6.dp),
+                                .background(
+                                    Color(0xFFDCFCE7),
+                                    RoundedCornerShape(50.dp)
+                                )
+                                .padding(
+                                    horizontal = 12.dp,
+                                    vertical = 6.dp
+                                ),
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF15803D)
@@ -369,7 +425,9 @@ private fun RetoCard(
                         ),
                         shape = RoundedCornerShape(18.dp)
                     )
-                    .clickable { onAceptar() },
+                    .clickable {
+                        onAceptar()
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -382,4 +440,3 @@ private fun RetoCard(
         }
     }
 }
-

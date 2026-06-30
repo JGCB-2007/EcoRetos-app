@@ -10,25 +10,61 @@ import kotlinx.coroutines.launch
 
 class ImpactoUsuarioViewModel : ViewModel() {
 
-    private val _impacto = MutableStateFlow<ImpactoUsuarioResponse?>(null)
-    val impacto: StateFlow<ImpactoUsuarioResponse?> = _impacto
+    private val _impacto =
+        MutableStateFlow<ImpactoUsuarioResponse?>(null)
 
-    private val _error = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _error
+    val impacto: StateFlow<ImpactoUsuarioResponse?> =
+        _impacto
 
-    fun cargarImpacto(idUsuario: Int) {
+    private val _error =
+        MutableStateFlow<String?>(null)
+
+    val error: StateFlow<String?> =
+        _error
+
+    /*
+     * Indica si los datos del impacto
+     * se están consultando en la API.
+     */
+    private val _cargando =
+        MutableStateFlow(false)
+
+    val cargando: StateFlow<Boolean> =
+        _cargando
+
+    fun cargarImpacto(
+        idUsuario: Int
+    ) {
         viewModelScope.launch {
+
+            _cargando.value = true
+            _error.value = null
+
             try {
-                val response = RetrofitClient.apiService.getImpactoUsuario(idUsuario)
+                val response =
+                    RetrofitClient.apiService
+                        .getImpactoUsuario(idUsuario)
 
                 if (response.isSuccessful) {
-                    _impacto.value = response.body()
+                    _impacto.value =
+                        response.body()
+
                     _error.value = null
                 } else {
-                    _error.value = "No se pudo cargar el impacto"
+                    _error.value =
+                        "No se pudo cargar el impacto"
                 }
+
             } catch (e: Exception) {
-                _error.value = "Error impacto: ${e.message}"
+                _error.value =
+                    "Error impacto: ${e.message}"
+
+            } finally {
+                /*
+                 * La carga termina cuando la API
+                 * responde o produce un error.
+                 */
+                _cargando.value = false
             }
         }
     }
