@@ -244,7 +244,7 @@ Visualización y revisión de evidencias enviadas.
 
 ### Dashboard del administrador
 
-<img src="docs/admin.png" width="330"/>
+<img src="docs/admin.jpeg" width="330"/>
 
 Panel con estadísticas reales, accesos rápidos y gestión del sistema.
 
