@@ -1,11 +1,6 @@
 package com.example.ecoretosapp.ui.screens
 
-/**
- * Pantalla encargada de mostrar la información del perfil del usuario.
- * Presenta datos personales o información relacionada con la cuenta
- * dentro de la aplicación.
- */
-
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,29 +13,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ecoretosapp.viewmodel.RetoViewModel
-import com.example.ecoretosapp.viewmodel.PerfilViewModel
 import com.example.ecoretosapp.ui.components.ConfirmacionDialog
+import com.example.ecoretosapp.viewmodel.PerfilViewModel
+import com.example.ecoretosapp.viewmodel.RetoViewModel
 
 @Composable
 fun PerfilEstudianteScreen(
     idUsuario: Int,
-    retoViewModel: RetoViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    perfilViewModel: PerfilViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    retoViewModel: RetoViewModel =
+        androidx.lifecycle.viewmodel.compose.viewModel(),
+    perfilViewModel: PerfilViewModel =
+        androidx.lifecycle.viewmodel.compose.viewModel(),
     onLogout: () -> Unit
-){
-    val retosAceptados by retoViewModel.retosAceptados.collectAsState()
+) {
     val usuario by perfilViewModel.usuario.collectAsState()
     val error by perfilViewModel.error.collectAsState()
     val insignias by perfilViewModel.insignias.collectAsState()
     val impacto by perfilViewModel.impacto.collectAsState()
+    val todasLasInsignias by
+    perfilViewModel.todasLasInsignias.collectAsState()
 
-    var confirmarLogout by remember { mutableStateOf(false) }
-
+    var confirmarLogout by remember {
+        mutableStateOf(false)
+    }
 
     LaunchedEffect(idUsuario) {
         perfilViewModel.cargarUsuario(idUsuario)
@@ -48,30 +47,38 @@ fun PerfilEstudianteScreen(
         perfilViewModel.cargarImpacto(idUsuario)
         perfilViewModel.cargarTodasLasInsignias()
     }
+
     val nombre = usuario?.nombreCompleto ?: "Cargando..."
     val puntos = usuario?.puntosTotales ?: 0
     val cif = usuario?.cif ?: "Sin CIF"
     val correo = usuario?.correoInstitucional ?: "Sin correo"
     val nivel = obtenerNivelEco(puntos)
-    val todasLasInsignias by perfilViewModel.todasLasInsignias.collectAsState()
 
     val iniciales = nombre
         .split(" ")
         .filter { it.isNotBlank() }
         .take(2)
-        .joinToString("") { it.first().uppercase() }
+        .joinToString("") {
+            it.first().uppercase()
+        }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    listOf(Color(0xFFECFDF5), Color.White, Color(0xFFF7FEE7))
+                    listOf(
+                        Color(0xFFECFDF5),
+                        Color.White,
+                        Color(0xFFF7FEE7)
+                    )
                 )
             )
             .padding(16.dp)
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement =
+                Arrangement.spacedBy(16.dp),
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
@@ -90,10 +97,11 @@ fun PerfilEstudianteScreen(
                     fontWeight = FontWeight.ExtraBold,
                     color = Color(0xFF0F172A)
                 )
+
                 if (error != null) {
                     Text(
                         text = error ?: "",
-                        color = Color.Red,
+                        color = Color(0xFFDC2626),
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -102,7 +110,9 @@ fun PerfilEstudianteScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(32.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.Transparent
+                ),
                 elevation = CardDefaults.cardElevation(6.dp)
             ) {
                 Box(
@@ -118,13 +128,16 @@ fun PerfilEstudianteScreen(
                         .padding(20.dp)
                 ) {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment =
+                            Alignment.CenterHorizontally
                     ) {
                         Box(
                             modifier = Modifier
                                 .size(82.dp)
                                 .background(
-                                    Color.White.copy(alpha = 0.20f),
+                                    Color.White.copy(
+                                        alpha = 0.20f
+                                    ),
                                     RoundedCornerShape(50.dp)
                                 ),
                             contentAlignment = Alignment.Center
@@ -137,7 +150,9 @@ fun PerfilEstudianteScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(
+                            modifier = Modifier.height(12.dp)
+                        )
 
                         Text(
                             text = nombre,
@@ -150,30 +165,44 @@ fun PerfilEstudianteScreen(
                             text = "$puntos puntos verdes",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color.White.copy(alpha = 0.90f)
+                            color = Color.White.copy(
+                                alpha = 0.90f
+                            )
                         )
+
                         Text(
                             text = cif,
                             fontSize = 13.sp,
-                            color = Color.White.copy(alpha = 0.85f)
+                            color = Color.White.copy(
+                                alpha = 0.85f
+                            )
                         )
 
                         Text(
                             text = correo,
                             fontSize = 13.sp,
-                            color = Color.White.copy(alpha = 0.85f)
+                            color = Color.White.copy(
+                                alpha = 0.85f
+                            )
                         )
-                        Spacer(modifier = Modifier.height(18.dp))
+
+                        Spacer(
+                            modifier = Modifier.height(18.dp)
+                        )
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            horizontalArrangement =
+                                Arrangement.spacedBy(10.dp)
                         ) {
                             PerfilStat(
                                 label = "Retos",
-                                value = (impacto?.retosCompletados ?: 0).toString(),
+                                value = (
+                                        impacto?.retosCompletados ?: 0
+                                        ).toString(),
                                 modifier = Modifier.weight(1f)
                             )
+
                             PerfilStat(
                                 label = "Medallas",
                                 value = insignias.size.toString(),
@@ -204,13 +233,14 @@ fun PerfilEstudianteScreen(
                 }
 
                 MedalCard(
-                    icono = if (obtenida) insignia.iconoUrl ?: "🏅" else "🔒",
+                    icono = insignia.iconoUrl ?: "🏅",
                     titulo = insignia.nombre,
-                    descripcion =
-                        if (obtenida)
-                            insignia.descripcion
-                        else
-                            "Disponible desde ${insignia.puntosMinimos} puntos",
+                    descripcion = if (obtenida) {
+                        insignia.descripcion
+                    } else {
+                        "Disponible desde " +
+                                "${insignia.puntosMinimos} puntos"
+                    },
                     desbloqueada = obtenida
                 )
             }
@@ -221,12 +251,16 @@ fun PerfilEstudianteScreen(
                 }
             )
 
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(
+                modifier = Modifier.height(80.dp)
+            )
         }
+
         if (confirmarLogout) {
             ConfirmacionDialog(
                 titulo = "Cerrar sesión",
-                mensaje = "¿Seguro que deseas cerrar sesión?",
+                mensaje =
+                    "¿Seguro que deseas cerrar sesión?",
                 textoConfirmar = "Cerrar sesión",
                 textoCancelar = "Cancelar",
                 onConfirmar = {
@@ -248,7 +282,9 @@ fun LogoutCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable {
+                onClick()
+            },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
@@ -259,7 +295,6 @@ fun LogoutCard(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Box(
                 modifier = Modifier
                     .size(50.dp)
@@ -269,17 +304,22 @@ fun LogoutCard(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text("🚪", fontSize = 24.sp)
+                Text(
+                    text = "🚪",
+                    fontSize = 24.sp
+                )
             }
 
-            Spacer(modifier = Modifier.width(14.dp))
+            Spacer(
+                modifier = Modifier.width(14.dp)
+            )
 
             Column {
                 Text(
                     text = "Cerrar sesión",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Red
+                    color = Color(0xFFDC2626)
                 )
 
                 Text(
@@ -287,13 +327,9 @@ fun LogoutCard(
                     fontSize = 13.sp,
                     color = Color(0xFF64748B)
                 )
-
             }
-
         }
-
     }
-
 }
 
 @Composable
@@ -304,7 +340,10 @@ private fun PerfilStat(
 ) {
     Column(
         modifier = modifier
-            .background(Color.White.copy(alpha = 0.20f), RoundedCornerShape(18.dp))
+            .background(
+                Color.White.copy(alpha = 0.20f),
+                RoundedCornerShape(18.dp)
+            )
             .padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -329,16 +368,24 @@ private fun MedalCard(
     titulo: String,
     descripcion: String,
     desbloqueada: Boolean
-){
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor =
-            if (desbloqueada)
+        colors = CardDefaults.cardColors(
+            containerColor = if (desbloqueada) {
                 Color.White
-            else
-                Color(0xFFF8FAFC)),
-        elevation = CardDefaults.cardElevation(3.dp)
+            } else {
+                Color(0xFFF1F5F9)
+            }
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (desbloqueada) {
+                3.dp
+            } else {
+                1.dp
+            }
+        )
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -347,34 +394,118 @@ private fun MedalCard(
             Box(
                 modifier = Modifier
                     .size(52.dp)
-                    .background(Color(0xFFD1FAE5), RoundedCornerShape(18.dp)),
+                    .background(
+                        color = if (desbloqueada) {
+                            Color(0xFFD1FAE5)
+                        } else {
+                            Color(0xFFE2E8F0)
+                        },
+                        shape = RoundedCornerShape(18.dp)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(icono, fontSize = 28.sp)
+                if (desbloqueada) {
+                    Text(
+                        text = icono,
+                        fontSize = 28.sp
+                    )
+                } else {
+                    MedallaBloqueadaIcon()
+                }
             }
 
-            Spacer(modifier = Modifier.width(14.dp))
+            Spacer(
+                modifier = Modifier.width(14.dp)
+            )
 
             Column {
                 Text(
                     text = titulo,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0F172A)
+                    color = if (desbloqueada) {
+                        Color(0xFF0F172A)
+                    } else {
+                        Color(0xFF64748B)
+                    }
                 )
 
                 Text(
                     text = descripcion,
                     fontSize = 13.sp,
-                    color = Color(0xFF64748B)
+                    color = if (desbloqueada) {
+                        Color(0xFF64748B)
+                    } else {
+                        Color(0xFF94A3B8)
+                    }
                 )
             }
         }
     }
-
 }
 
-fun obtenerNivelEco(puntos: Int): String {
+@Composable
+private fun MedallaBloqueadaIcon() {
+    Canvas(
+        modifier = Modifier.size(34.dp)
+    ) {
+        val ancho = size.width
+        val alto = size.height
+        val centroX = ancho / 2f
+
+        val colorCinta = Color(0xFF9CA3AF)
+        val colorMedalla = Color(0xFF6B7280)
+        val colorCentro = Color(0xFFD1D5DB)
+
+        val cintaIzquierda = Path().apply {
+            moveTo(centroX - 10f, 0f)
+            lineTo(centroX - 2f, alto * 0.48f)
+            lineTo(centroX - 11f, alto * 0.56f)
+            lineTo(centroX - 17f, 0f)
+            close()
+        }
+
+        val cintaDerecha = Path().apply {
+            moveTo(centroX + 10f, 0f)
+            lineTo(centroX + 2f, alto * 0.48f)
+            lineTo(centroX + 11f, alto * 0.56f)
+            lineTo(centroX + 17f, 0f)
+            close()
+        }
+
+        drawPath(
+            path = cintaIzquierda,
+            color = colorCinta
+        )
+
+        drawPath(
+            path = cintaDerecha,
+            color = colorCinta
+        )
+
+        drawCircle(
+            color = colorMedalla,
+            radius = ancho * 0.30f,
+            center = androidx.compose.ui.geometry.Offset(
+                x = centroX,
+                y = alto * 0.66f
+            )
+        )
+
+        drawCircle(
+            color = colorCentro,
+            radius = ancho * 0.15f,
+            center = androidx.compose.ui.geometry.Offset(
+                x = centroX,
+                y = alto * 0.66f
+            )
+        )
+    }
+}
+
+fun obtenerNivelEco(
+    puntos: Int
+): String {
     return when {
         puntos >= 500 -> "Maestro"
         puntos >= 300 -> "Guardián"
@@ -383,4 +514,3 @@ fun obtenerNivelEco(puntos: Int): String {
         else -> "Novato"
     }
 }
-
