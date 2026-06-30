@@ -226,7 +226,7 @@ Datos personales, nivel ecológico e insignias.
 
 ### Evidencias
 
-<img src="docs/evidencias.jpeg" width="230"/>
+<img src="docs/evidencia.jpeg" width="230"/>
 
 Visualización y revisión de evidencias enviadas.
 
