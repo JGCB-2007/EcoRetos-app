@@ -6,6 +6,8 @@ package com.example.ecoretosapp.ui.screens
  * en la interfaz administrativa.
  */
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,20 +15,22 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ecoretosapp.viewmodel.AdminDashboardViewModel
+import com.example.ecoretosapp.R
 import com.example.ecoretosapp.ui.components.ConfirmacionDialog
-import androidx.compose.runtime.*
-
+import com.example.ecoretosapp.viewmodel.AdminDashboardViewModel
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 @Composable
 fun AdminInicioDesign(
     irCrearReto: () -> Unit,
@@ -44,6 +48,7 @@ fun AdminInicioDesign(
     LaunchedEffect(Unit) {
         dashboardViewModel.cargarDashboard()
     }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -60,7 +65,6 @@ fun AdminInicioDesign(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        // HEADER
         item {
             Card(
                 shape = RoundedCornerShape(30.dp),
@@ -116,6 +120,7 @@ fun AdminInicioDesign(
                 }
             }
         }
+
         if (error != null) {
             item {
                 Text(
@@ -125,7 +130,7 @@ fun AdminInicioDesign(
                 )
             }
         }
-        // TARJETAS SUPERIORES
+
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 AdminResumenCard("🎯", "Retos activos", "${dashboard?.retosActivos ?: 0}", Modifier.weight(1f))
@@ -139,6 +144,7 @@ fun AdminInicioDesign(
                 AdminResumenCard("👥", "Usuarios", "${dashboard?.usuariosRegistrados ?: 0}", Modifier.weight(1f))
             }
         }
+
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 AdminResumenCard("📝", "Propuestas", "${dashboard?.propuestasPendientes ?: 0}", Modifier.weight(1f))
@@ -166,31 +172,32 @@ fun AdminInicioDesign(
                     )
 
                     AdminActionPrimary(
-                        icono = "＋",
+                        icono = R.drawable.ic_crear_reto,
                         texto = "Crear nuevo reto",
                         onClick = irCrearReto
                     )
 
                     AdminActionSecondary(
-                        icono = "📷",
+                        icono = R.drawable.ic_revisar_evidencias,
                         texto = "Revisar evidencias",
                         onClick = irRevisarEvidencias
                     )
 
                     AdminActionSecondary(
-                        icono = "🏆",
+                        icono = R.drawable.ic_crear_insignia,
                         texto = "Crear insignia",
                         onClick = irCrearInsignia
                     )
 
                     AdminActionSecondary(
-                        icono = "📝",
+                        icono = R.drawable.ic_propuestas,
                         texto = "Propuestas de estudiantes",
                         onClick = irPropuestas
                     )
                 }
             }
         }
+
         item {
             Card(
                 modifier = Modifier
@@ -212,7 +219,6 @@ fun AdminInicioDesign(
                 }
             }
         }
-
     }
 
     if (confirmarLogout) {
@@ -285,7 +291,7 @@ fun AdminResumenCard(
 
 @Composable
 fun AdminActionPrimary(
-    icono: String,
+    @DrawableRes icono: Int,
     texto: String,
     onClick: () -> Unit
 ) {
@@ -312,18 +318,20 @@ fun AdminActionPrimary(
         ) {
             Box(
                 modifier = Modifier
-                    .size(38.dp)
+                    .size(44.dp)
                     .background(
                         Color.White.copy(alpha = 0.95f),
                         RoundedCornerShape(12.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = icono,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF10B981)
+                Image(
+                    painter = painterResource(id = icono),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(10.dp)),
+                    contentScale = ContentScale.Crop
                 )
             }
 
@@ -349,7 +357,7 @@ fun AdminActionPrimary(
 
 @Composable
 fun AdminActionSecondary(
-    icono: String,
+    @DrawableRes icono: Int,
     texto: String,
     onClick: () -> Unit
 ) {
@@ -376,16 +384,19 @@ fun AdminActionSecondary(
         ) {
             Box(
                 modifier = Modifier
-                    .size(38.dp)
-                    .background(
+                    .size(44.dp).background(
                         Color(0xFFD1FAE5),
                         RoundedCornerShape(12.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = icono,
-                    fontSize = 22.sp
+                Image(
+                    painter = painterResource(id = icono),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(10.dp)),
+                    contentScale = ContentScale.Crop
                 )
             }
 
