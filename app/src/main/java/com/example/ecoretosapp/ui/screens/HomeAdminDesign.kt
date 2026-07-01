@@ -1,6 +1,5 @@
 package com.example.ecoretosapp.ui.screens
 
-
 /**
  * Contiene el diseño visual de la pantalla principal del administrador.
  * Define la estructura y apariencia de los componentes mostrados
@@ -151,11 +150,14 @@ fun AdminInicioDesign(
             Card(
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface // mismo blanco que los otros
+                    containerColor = MaterialTheme.colorScheme.surface
                 ),
                 elevation = CardDefaults.cardElevation(3.dp)
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
 
                     Text(
                         text = "Acciones principales",
@@ -163,72 +165,29 @@ fun AdminInicioDesign(
                         fontWeight = FontWeight.Bold
                     )
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    AdminActionPrimary(
+                        icono = "＋",
+                        texto = "Crear nuevo reto",
+                        onClick = irCrearReto
+                    )
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { irCrearReto() }
-                            .background(
-                                Brush.horizontalGradient(
-                                    listOf(
-                                        Color(0xFF10B981),
-                                        Color(0xFF84CC16)
-                                    )
-                                ),
-                                shape = RoundedCornerShape(50)
-                            )
-                            .padding(vertical = 14.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "➕ Crear nuevo reto",
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
-                        )
-                    }
+                    AdminActionSecondary(
+                        icono = "📷",
+                        texto = "Revisar evidencias",
+                        onClick = irRevisarEvidencias
+                    )
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    AdminActionSecondary(
+                        icono = "🏆",
+                        texto = "Crear insignia",
+                        onClick = irCrearInsignia
+                    )
 
-                    OutlinedButton(
-                        onClick = irRevisarEvidencias,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            "📷 Revisar evidencias",
-                            color = Color.Black
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    OutlinedButton(
-                        onClick = irCrearInsignia,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            "🏆 Crear insignia",
-                            color = Color.Black
-                        )
-                    }
-                    OutlinedButton(
-                        onClick = irPropuestas,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(58.dp),
-                        shape = RoundedCornerShape(28.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = Color.Black
-                        )
-                    ) {
-                        Text(
-                            text = "📝 Propuestas de estudiantes",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
+                    AdminActionSecondary(
+                        icono = "📝",
+                        texto = "Propuestas de estudiantes",
+                        onClick = irPropuestas
+                    )
                 }
             }
         }
@@ -325,6 +284,132 @@ fun AdminResumenCard(
 }
 
 @Composable
+fun AdminActionPrimary(
+    icono: String,
+    texto: String,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(58.dp)
+            .clickable { onClick() }
+            .background(
+                Brush.horizontalGradient(
+                    listOf(
+                        Color(0xFF10B981),
+                        Color(0xFF84CC16)
+                    )
+                ),
+                RoundedCornerShape(20.dp)
+            )
+            .padding(horizontal = 14.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(38.dp)
+                    .background(
+                        Color.White.copy(alpha = 0.95f),
+                        RoundedCornerShape(12.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = icono,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF10B981)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(14.dp))
+
+            Text(
+                text = texto,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                modifier = Modifier.weight(1f)
+            )
+
+            Text(
+                text = "›",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+        }
+    }
+}
+
+@Composable
+fun AdminActionSecondary(
+    icono: String,
+    texto: String,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(58.dp)
+            .clickable { onClick() }
+            .background(
+                Color(0xFFF8FAFC),
+                RoundedCornerShape(20.dp)
+            )
+            .border(
+                width = 1.dp,
+                color = Color(0xFFBBF7D0),
+                shape = RoundedCornerShape(20.dp)
+            )
+            .padding(horizontal = 14.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(38.dp)
+                    .background(
+                        Color(0xFFD1FAE5),
+                        RoundedCornerShape(12.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = icono,
+                    fontSize = 22.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.width(14.dp))
+
+            Text(
+                text = texto,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF0F172A),
+                modifier = Modifier.weight(1f)
+            )
+
+            Text(
+                text = "›",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF64748B)
+            )
+        }
+    }
+}
+
+@Composable
 fun LogoutAdminCard(
     onClick: () -> Unit
 ) {
@@ -337,7 +422,7 @@ fun LogoutAdminCard(
                 .fillMaxWidth(0.85f)
                 .clickable { onClick() }
                 .shadow(
-                    elevation = 6.dp, // 🔥 sombra
+                    elevation = 6.dp,
                     shape = RoundedCornerShape(50),
                     clip = false
                 )
