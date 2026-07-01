@@ -17,11 +17,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.rememberAsyncImagePainter
 import com.example.ecoretosapp.data.model.EvidenciaAdminResponse
 import com.example.ecoretosapp.viewmodel.AdminEvidenciaViewModel
 import coil.compose.AsyncImage
 import com.example.ecoretosapp.ui.components.ConfirmacionDialog
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.window.Dialog
 
 @Composable
 fun RevisarEvidenciasAdminScreen(
@@ -172,6 +173,7 @@ fun EvidenciaAdminCard(
     onAprobar: (EvidenciaAdminResponse) -> Unit,
     onRechazar: (EvidenciaAdminResponse) -> Unit
 ) {
+    var imagenAmpliada by remember { mutableStateOf(false) }
     Card(
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -216,7 +218,11 @@ fun EvidenciaAdminCard(
                         AsyncImage(
                             model = evidencia.urlImagen.trim(),
                             contentDescription = "Evidencia enviada",
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clickable {
+                                    imagenAmpliada = true
+                                },
                             contentScale = ContentScale.Crop
                         )
                     } else {
@@ -249,6 +255,53 @@ fun EvidenciaAdminCard(
                     )
                 ) {
                     Text("Rechazar")
+                }
+            }
+        }
+    }
+    if (imagenAmpliada) {
+        Dialog(
+            onDismissRequest = {
+                imagenAmpliada = false
+            }
+        ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(520.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(
+                        text = evidencia.tituloReto,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    AsyncImage(
+                        model = evidencia.urlImagen.trim(),
+                        contentDescription = "Evidencia ampliada",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        contentScale = ContentScale.Fit
+                    )
+
+                    OutlinedButton(
+                        onClick = {
+                            imagenAmpliada = false
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Text("Cerrar")
+                    }
                 }
             }
         }
