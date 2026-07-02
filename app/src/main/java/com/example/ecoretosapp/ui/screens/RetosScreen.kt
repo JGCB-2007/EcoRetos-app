@@ -6,6 +6,7 @@ package com.example.ecoretosapp.ui.screens
  * registrados en la aplicación.
  */
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -221,7 +222,7 @@ fun RetosScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
-                                Button(
+                                OutlinedButton(
                                     onClick = {
                                         viewModel.cancelarRetoApi(
                                             idReto = reto.idReto,
@@ -232,8 +233,13 @@ fun RetosScreen(
                                         .weight(1f)
                                         .height(50.dp),
                                     shape = RoundedCornerShape(18.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFFEF4444)
+                                    border = BorderStroke(
+                                        width = 1.5.dp,
+                                        color = Color(0xFFEF4444)
+                                    ),
+                                    colors = ButtonDefaults.outlinedButtonColors(
+                                        containerColor = Color.White,
+                                        contentColor = Color(0xFFDC2626)
                                     )
                                 ) {
                                     Text(
@@ -243,30 +249,39 @@ fun RetosScreen(
                                     )
                                 }
 
-                                Button(
-                                    onClick = {
-                                        val participacion = participaciones.find {
-                                            it.idReto == reto.idReto
-                                        }
-
-                                        if (participacion?.estado == "ACEPTADO") {
-                                            onEnviarEvidencia(reto)
-                                        } else {
-                                            viewModel.mostrarError("Este reto ya tiene evidencia enviada")
-                                        }
-                                    },
+                                Box(
                                     modifier = Modifier
                                         .weight(1f)
-                                        .height(50.dp),
-                                    shape = RoundedCornerShape(18.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFF0EA5E9)
-                                    )
+                                        .height(50.dp)
+                                        .background(
+                                            brush = Brush.horizontalGradient(
+                                                listOf(
+                                                    Color(0xFF10B981),
+                                                    Color(0xFF84CC16)
+                                                )
+                                            ),
+                                            shape = RoundedCornerShape(18.dp)
+                                        )
+                                        .clickable {
+                                            val participacion = participaciones.find {
+                                                it.idReto == reto.idReto
+                                            }
+
+                                            if (participacion?.estado == "ACEPTADO") {
+                                                onEnviarEvidencia(reto)
+                                            } else {
+                                                viewModel.mostrarError(
+                                                    "Este reto ya tiene evidencia enviada"
+                                                )
+                                            }
+                                        },
+                                    contentAlignment = Alignment.Center
                                 ) {
                                     Text(
                                         text = "Completar reto",
                                         fontSize = 14.sp,
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
                                     )
                                 }
                             }
