@@ -216,7 +216,7 @@ class RetoViewModel : ViewModel() {
                     cargarParticipaciones(idUsuario)
                 } else {
                     _error.value =
-                        "No se pudo cancelar el reto"
+                        "No se puede cancelar el reto, un administrador esta verificando tu evidencia"
                 }
 
             } catch (e: Exception) {
