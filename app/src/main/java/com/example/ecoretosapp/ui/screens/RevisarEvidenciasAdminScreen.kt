@@ -1,5 +1,6 @@
 package com.example.ecoretosapp.ui.screens
 
+import android.R.attr.fontWeight
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -85,7 +86,11 @@ fun RevisarEvidenciasAdminScreen(
                     .height(52.dp),
                 shape = RoundedCornerShape(18.dp)
             ) {
-                Text("Volver")
+                Text(
+                    text = "Volver",
+                    color = Color(0xFF10B981),
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
 
