@@ -133,23 +133,56 @@ fun AdminInicioDesign(
         }
 
         item {
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                AdminResumenCard("🎯", "Retos activos", "${dashboard?.retosActivos ?: 0}", Modifier.weight(1f))
-                AdminResumenCard("📷", "Evidencias", "${dashboard?.evidenciasPendientes ?: 0}", Modifier.weight(1f))
+            Row(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
+                AdminResumenCard(
+                    R.drawable.ic_retos_activos,
+                    "Retos activos",
+                    "${dashboard?.retosActivos ?: 0}",
+                    Modifier.weight(1f)
+                )
+
+                AdminResumenCard(
+                    R.drawable.ic_evidencias_dashboard,
+                    "Evidencias",
+                    "${dashboard?.evidenciasPendientes ?: 0}",
+                    Modifier.weight(1f)
+                )
             }
         }
 
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                AdminResumenCard("🏆", "Insignias", "${dashboard?.insigniasActivas ?: 0}", Modifier.weight(1f))
-                AdminResumenCard("👥", "Usuarios", "${dashboard?.usuariosRegistrados ?: 0}", Modifier.weight(1f))
+                AdminResumenCard(
+                    R.drawable.ic_insignias_dashboard,
+                    "Insignias",
+                    "${dashboard?.insigniasActivas ?: 0}",
+                    Modifier.weight(1f)
+                )
+
+                AdminResumenCard(
+                    R.drawable.ic_usuarios_dashboard,
+                    "Usuarios",
+                    "${dashboard?.usuariosRegistrados ?: 0}",
+                    Modifier.weight(1f)
+                )
             }
         }
 
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                AdminResumenCard("📝", "Propuestas", "${dashboard?.propuestasPendientes ?: 0}", Modifier.weight(1f))
-                AdminResumenCard("📊", "Sistema", "Activo", Modifier.weight(1f))
+                AdminResumenCard(
+                    R.drawable.ic_propuestas_dashboard,
+                    "Propuestas",
+                    "${dashboard?.propuestasPendientes ?: 0}",
+                    Modifier.weight(1f)
+                )
+
+                AdminResumenCard(
+                    R.drawable.ic_sistema_dashboard,
+                    "Sistema",
+                    "Activo",
+                    Modifier.weight(1f)
+                )
             }
         }
 
@@ -241,7 +274,7 @@ fun AdminInicioDesign(
 
 @Composable
 fun AdminResumenCard(
-    icono: String,
+    @DrawableRes icono: Int,
     titulo: String,
     valor: String,
     modifier: Modifier
@@ -263,10 +296,20 @@ fun AdminResumenCard(
             Box(
                 modifier = Modifier
                     .size(42.dp)
-                    .background(Color(0xFFD1FAE5), RoundedCornerShape(14.dp)),
+                    .background(
+                        Color(0xFFD1FAE5),
+                        RoundedCornerShape(14.dp)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(icono, fontSize = 22.sp)
+                Image(
+                    painter = painterResource(id = icono),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop
+                )
             }
 
             Spacer(modifier = Modifier.width(10.dp))
