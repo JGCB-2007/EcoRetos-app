@@ -434,13 +434,14 @@ fun LogoutAdminCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.85f)
-                .clip(RoundedCornerShape(50))
-                .clickable { onClick() }
+                .height(56.dp)
                 .shadow(
                     elevation = 6.dp,
                     shape = RoundedCornerShape(50),
                     clip = false
                 )
+                .clip(RoundedCornerShape(50))
+                .clickable { onClick() }
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(50)
@@ -449,22 +450,30 @@ fun LogoutAdminCard(
                     width = 1.dp,
                     color = Color.Black,
                     shape = RoundedCornerShape(50)
-                )
-                .padding(vertical = 14.dp),
+                ),
             contentAlignment = Alignment.Center
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("🚪", fontSize = 18.sp)
+                Box(
+                    modifier = Modifier.size(40.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_logout),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(14.dp))
 
                 Text(
                     text = "Cerrar sesión",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Red
+                    color = Color(0xFFDC2626)
                 )
             }
         }
