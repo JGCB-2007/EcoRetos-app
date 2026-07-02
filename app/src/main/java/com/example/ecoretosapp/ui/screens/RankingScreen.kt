@@ -18,6 +18,7 @@ import com.example.ecoretosapp.data.model.RankingResponse
 import com.example.ecoretosapp.viewmodel.RankingViewModel
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 
 @Composable
@@ -137,8 +138,13 @@ fun TopUserCircle(
         ) {
             Box(
                 modifier = Modifier
-                    .size(if (isMain) 90.dp else 70.dp)
-                    .background(Color.White, CircleShape)
+                    .size(
+                        if (isMain) 90.dp else 70.dp
+                    )
+                    .background(
+                        Color.White,
+                        CircleShape
+                    )
             )
 
             Text(
@@ -148,7 +154,9 @@ fun TopUserCircle(
             )
         }
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(
+            modifier = Modifier.height(6.dp)
+        )
 
         Text(
             text = user.nombreCompleto,
@@ -163,6 +171,7 @@ fun TopUserCircle(
         )
     }
 }
+
 
 @Composable
 fun RankingItem(
