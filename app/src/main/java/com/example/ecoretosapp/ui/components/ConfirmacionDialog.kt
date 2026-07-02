@@ -19,14 +19,13 @@ fun ConfirmacionDialog(
     mensaje: String,
     textoConfirmar: String = "Confirmar",
     textoCancelar: String = "Cancelar",
+    colorConfirmar: Color = Color(0xFF10B981),
     onConfirmar: () -> Unit,
     onCancelar: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onCancelar,
-
         containerColor = Color.White,
-
         shape = RoundedCornerShape(24.dp),
 
         title = {
@@ -51,7 +50,7 @@ fun ConfirmacionDialog(
                 onClick = onConfirmar,
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFEF4444),
+                    containerColor = colorConfirmar,
                     contentColor = Color.White
                 )
             ) {

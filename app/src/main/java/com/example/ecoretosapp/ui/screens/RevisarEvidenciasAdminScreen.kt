@@ -156,6 +156,7 @@ fun RevisarEvidenciasAdminScreen(
             titulo = "Rechazar evidencia",
             mensaje = "¿Seguro que deseas rechazar la evidencia de \"${evidenciaRechazar!!.tituloReto}\"?",
             textoConfirmar = "Rechazar",
+            colorConfirmar = Color(0xFFEF4444),
             onConfirmar = {
                 viewModel.rechazarEvidencia(evidenciaRechazar!!.idEvidencia)
                 evidenciaRechazar = null
