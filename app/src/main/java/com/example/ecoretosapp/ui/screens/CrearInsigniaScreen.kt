@@ -197,16 +197,27 @@ fun CrearInsigniaScreen(
                 puntos = ""
                 icono = "🏆"
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF10B981)
+            )
         ) {
-            Text("Guardar insignia")
-        }
+                Text(
+                    text = "Guardar insignia",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
         OutlinedButton(
             onClick = volver,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Volver")
+            Text(
+                text = "Volver",
+                color = Color(0xFF10B981),
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
