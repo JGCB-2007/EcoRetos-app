@@ -177,7 +177,8 @@ fun CrearRetoDesign(
 
                         ExposedDropdownMenu(
                             expanded = expandedTipoValidacion,
-                            onDismissRequest = { expandedTipoValidacion = false }
+                            onDismissRequest = { expandedTipoValidacion = false },
+                            containerColor = Color.White
                         ) {
                             tiposValidacion.forEach { tipo ->
                                 DropdownMenuItem(
