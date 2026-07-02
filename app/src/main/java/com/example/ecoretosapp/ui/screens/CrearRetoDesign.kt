@@ -143,7 +143,8 @@ fun CrearRetoDesign(
 
                         ExposedDropdownMenu(
                             expanded = expandedDificultad,
-                            onDismissRequest = { expandedDificultad = false }
+                            onDismissRequest = { expandedDificultad = false },
+                            containerColor = Color.White
                         ) {
                             dificultades.forEach { dificultad ->
                                 DropdownMenuItem(
