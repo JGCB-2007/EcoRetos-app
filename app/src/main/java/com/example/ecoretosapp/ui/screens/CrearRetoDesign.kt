@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecoretosapp.data.model.Reto
 import com.example.ecoretosapp.ui.components.ConfirmacionDialog
+import com.example.ecoretosapp.ui.components.IconoReto
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -394,15 +395,12 @@ private fun RetoAdminCard(
                         modifier = Modifier
                             .size(52.dp)
                             .background(
-                                Color(0xFFD1FAE5),
+                                Color.White,
                                 RoundedCornerShape(16.dp)
                             ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = "🎯",
-                            fontSize = 26.sp
-                        )
+                        IconoReto(size = 52.dp)
                     }
 
                     Spacer(modifier = Modifier.width(12.dp))
