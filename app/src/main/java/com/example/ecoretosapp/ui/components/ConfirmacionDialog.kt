@@ -20,6 +20,7 @@ fun ConfirmacionDialog(
     textoConfirmar: String = "Confirmar",
     textoCancelar: String = "Cancelar",
     colorConfirmar: Color = Color(0xFF10B981),
+    colorCancelar: Color = Color(0xFFEF4444),
     onConfirmar: () -> Unit,
     onCancelar: () -> Unit
 ) {
@@ -67,15 +68,16 @@ fun ConfirmacionDialog(
                 shape = RoundedCornerShape(14.dp),
                 border = BorderStroke(
                     width = 1.dp,
-                    color = Color(0xFF10B981)
+                    color = colorCancelar
                 ),
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = Color.White,
-                    contentColor = Color(0xFF047857)
+                    contentColor = colorCancelar
                 )
             ) {
                 Text(
                     text = textoCancelar,
+                    color = colorCancelar,
                     fontWeight = FontWeight.Bold
                 )
             }

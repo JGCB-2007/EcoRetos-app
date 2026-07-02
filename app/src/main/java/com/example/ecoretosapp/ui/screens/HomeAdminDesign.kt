@@ -261,6 +261,8 @@ fun AdminInicioDesign(
             mensaje = "¿Seguro que deseas cerrar sesión?",
             textoConfirmar = "Cerrar sesión",
             textoCancelar = "Cancelar",
+            colorConfirmar = Color(0xFFEF4444),
+            colorCancelar = Color(0xFF10B981),
             onConfirmar = {
                 confirmarLogout = false
                 onLogout()
