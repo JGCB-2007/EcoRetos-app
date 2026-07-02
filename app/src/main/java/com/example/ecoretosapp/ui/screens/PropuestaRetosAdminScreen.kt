@@ -77,7 +77,10 @@ fun PropuestasRetosAdminScreen(
                     .height(52.dp),
                 shape = RoundedCornerShape(18.dp)
             ) {
-                Text("Volver")
+                Text(text = "Volver",
+                    color = Color(0xFF10B981),
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
 
