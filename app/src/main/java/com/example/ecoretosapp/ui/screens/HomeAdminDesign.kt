@@ -31,6 +31,7 @@ import com.example.ecoretosapp.ui.components.ConfirmacionDialog
 import com.example.ecoretosapp.viewmodel.AdminDashboardViewModel
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+
 @Composable
 fun AdminInicioDesign(
     irCrearReto: () -> Unit,
@@ -299,6 +300,7 @@ fun AdminActionPrimary(
         modifier = Modifier
             .fillMaxWidth()
             .height(58.dp)
+            .clip(RoundedCornerShape(20.dp))
             .clickable { onClick() }
             .background(
                 Brush.horizontalGradient(
@@ -365,6 +367,7 @@ fun AdminActionSecondary(
         modifier = Modifier
             .fillMaxWidth()
             .height(58.dp)
+            .clip(RoundedCornerShape(20.dp))
             .clickable { onClick() }
             .background(
                 Color(0xFFF8FAFC),
@@ -431,6 +434,7 @@ fun LogoutAdminCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.85f)
+                .clip(RoundedCornerShape(50))
                 .clickable { onClick() }
                 .shadow(
                     elevation = 6.dp,
