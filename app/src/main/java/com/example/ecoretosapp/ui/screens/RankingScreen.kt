@@ -18,6 +18,7 @@ import com.example.ecoretosapp.data.model.RankingResponse
 import com.example.ecoretosapp.viewmodel.RankingViewModel
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun RankingScreen(
@@ -49,7 +50,10 @@ fun RankingScreen(
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             )
 
             Spacer(modifier = Modifier.height(20.dp))
