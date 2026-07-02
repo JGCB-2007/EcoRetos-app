@@ -306,7 +306,11 @@ fun EvidenciaAdminCard(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp)
                     ) {
-                        Text("Cerrar")
+                        Text(
+                            text = "Cerrar",
+                            color = Color(0xFF10B981),
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
