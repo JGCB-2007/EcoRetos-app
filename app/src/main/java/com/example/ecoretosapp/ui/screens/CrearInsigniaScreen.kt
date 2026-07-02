@@ -70,6 +70,12 @@ fun CrearInsigniaScreen(
             label = {
                 Text("Nombre")
             },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFF10B981),
+                unfocusedBorderColor = Color(0xFF94A3B8),
+                focusedLabelColor = Color(0xFF10B981),
+                cursorColor = Color(0xFF10B981)
+            ),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -81,6 +87,12 @@ fun CrearInsigniaScreen(
             label = {
                 Text("Descripción")
             },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFF10B981),
+                unfocusedBorderColor = Color(0xFF94A3B8),
+                focusedLabelColor = Color(0xFF10B981),
+                cursorColor = Color(0xFF10B981)
+            ),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -92,6 +104,12 @@ fun CrearInsigniaScreen(
             label = {
                 Text("Puntos requeridos")
             },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFF10B981),
+                unfocusedBorderColor = Color(0xFF94A3B8),
+                focusedLabelColor = Color(0xFF10B981),
+                cursorColor = Color(0xFF10B981)
+            ),
             modifier = Modifier.fillMaxWidth()
         )
 
